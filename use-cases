@@ -1,0 +1,17 @@
+Casos de uso:
+
+- Crear gasto fijo
+    Se considera gasto fijo, el dividendo por ejemplo.
+
+- Crear gasto opcional
+    Se considera gasto opcional Netflix por ejemplo.
+
+- Registrar sueldo mensual
+    El sueldo no es una entrada fija, por lo tanto se debe poder registrar el sueldo. 
+
+Módulo Deudor
+- Crear deudor
+    Persona que adquiere una deuda, por ejemplo, una compra en una casa comercial en cuotas o un prestamo con ahorros
+
+- Crear deuda
+    Una deuda es un compromiso futuro por pagar.
