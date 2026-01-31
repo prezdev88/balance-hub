@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class DebtorId {
 
-    private String id;
+    private final String id;
 
     public DebtorId() {
         this.id = UUID.randomUUID().toString();
