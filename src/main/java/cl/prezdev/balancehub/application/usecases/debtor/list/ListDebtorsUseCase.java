@@ -27,7 +27,7 @@ public class ListDebtorsUseCase {
     private List<DebtorListItem> map(List<Debtor> debtors) {
         return debtors.stream()
             .map(debtor -> new DebtorListItem(
-                debtor.getId().value(),
+                debtor.getId(),
                 debtor.getName(),
                 debtor.getEmail()
             ))
