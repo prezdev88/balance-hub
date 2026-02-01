@@ -10,7 +10,7 @@ public class DebtorId {
         this.id = UUID.randomUUID().toString();
     }
 
-    public String getId() {
+    public String value() {
         return id;
     }
 }
