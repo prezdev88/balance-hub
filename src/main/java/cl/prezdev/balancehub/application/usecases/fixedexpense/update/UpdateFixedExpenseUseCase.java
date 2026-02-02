@@ -1,5 +1,6 @@
 package cl.prezdev.balancehub.application.usecases.fixedexpense.update;
 
+import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException;
 import cl.prezdev.balancehub.application.ports.out.FixedExpenseRepository;
 import cl.prezdev.balancehub.domain.FixedExpense;
 
@@ -15,20 +16,21 @@ public class UpdateFixedExpenseUseCase {
         this.repository = repository;
     }
 
-    public UpdateFixedExpenseResponse execute(UpdateFixedExpenseCommand command) {
+    public UpdateFixedExpenseResult execute(UpdateFixedExpenseCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command cannot be null");
         }
 
-        var fixedExpense = new FixedExpense (
-            command.id(),
-            command.description(),
-            command.amount()
+        FixedExpense fixedExpense = repository.findById(command.id()).orElseThrow(
+            () -> new FixedExpenseNotFoundException("FixedExpense with id " + command.id() + " not found")
         );
 
-        repository.save(fixedExpense);
+        fixedExpense.setDescription(command.description());
+        fixedExpense.setAmount(command.amount());
 
-        return new UpdateFixedExpenseResponse (
+        repository.update(fixedExpense);
+
+        return new UpdateFixedExpenseResult (
             fixedExpense.getId(),
             fixedExpense.getDescription(),
             fixedExpense.getAmount()

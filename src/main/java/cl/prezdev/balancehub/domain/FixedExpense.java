@@ -6,9 +6,9 @@ import cl.prezdev.balancehub.domain.exception.InvalidFixedExpenseException;
 
 public class FixedExpense {
 
-    private final String id;
-    private final String description;
-    private final double amount;
+    private String id;
+    private String description;
+    private double amount;
 
     public FixedExpense(String description, double amount) {
         this(UUID.randomUUID().toString(), description, amount);
@@ -46,5 +46,21 @@ public class FixedExpense {
         if (amount <= 0) {
             throw new InvalidFixedExpenseException("Amount must be greater than zero");
         }
+    }
+
+    public void setAmount(double amount) {
+        if (amount <= 0) {
+            throw new InvalidFixedExpenseException("Amount must be greater than zero");
+        }
+
+        this.amount = amount; 
+    }
+
+    public void setDescription(String description) {
+        if (description == null || description.isBlank()) {
+            throw new InvalidFixedExpenseException("Description cannot be null or blank");
+        }
+
+        this.description = description;
     }
 }
