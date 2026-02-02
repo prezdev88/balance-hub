@@ -11,9 +11,13 @@ public class FixedExpense {
     private final double amount;
 
     public FixedExpense(String description, double amount) {
-        validate(description, amount);
+        this(UUID.randomUUID().toString(), description, amount);
+    }
 
-        this.id = UUID.randomUUID().toString();
+    public FixedExpense(String id, String description, double amount) {
+        validate(id, description, amount);
+
+        this.id = id;
         this.description = description;
         this.amount = amount;
     }
@@ -30,7 +34,11 @@ public class FixedExpense {
         return amount;
     }
     
-    private static void validate(String description, double amount) {
+    private static void validate(String id, String description, double amount) {
+        if (id == null || id.isBlank()) {
+            throw new InvalidFixedExpenseException("ID cannot be null or blank");
+        }
+
         if (description == null || description.isBlank()) {
             throw new InvalidFixedExpenseException("Description cannot be null or blank");
         }

@@ -1,7 +1,10 @@
 Casos de uso:
 
-- Crear gasto fijo
+- [OK] Crear gasto fijo
     Se considera gasto fijo, el dividendo por ejemplo.
+
+- [OK] Actualizar gasto fijo
+    Debe permitir cambiar el monto y el nombre de un gasto fijo
 
 - Crear gasto opcional
     Se considera gasto opcional Netflix por ejemplo.
