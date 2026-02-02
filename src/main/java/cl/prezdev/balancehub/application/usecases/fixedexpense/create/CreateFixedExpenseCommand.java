@@ -1,5 +1,7 @@
 package cl.prezdev.balancehub.application.usecases.fixedexpense.create;
 
+import java.math.BigDecimal;
+
 public record CreateFixedExpenseCommand(
-    String description, double amount
+    String description, BigDecimal amount
 ) {}

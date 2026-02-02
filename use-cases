@@ -9,8 +9,11 @@ Casos de uso:
 - Crear gasto opcional
     Se considera gasto opcional Netflix por ejemplo.
 
-- Registrar sueldo mensual
+- [OK] Registrar sueldo mensual
     El sueldo no es una entrada fija, por lo tanto se debe poder registrar el sueldo. 
+
+- Actualizar sueldo mensual
+    Modificar el sueldo
 
 Módulo Deudor
 - [OK] Crear deudor

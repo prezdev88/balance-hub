@@ -1,5 +1,6 @@
 package cl.prezdev.balancehub.domain;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import cl.prezdev.balancehub.domain.exception.InvalidFixedExpenseException;
@@ -8,13 +9,13 @@ public class FixedExpense {
 
     private String id;
     private String description;
-    private double amount;
+    private BigDecimal amount;
 
-    public FixedExpense(String description, double amount) {
+    public FixedExpense(String description, BigDecimal amount) {
         this(UUID.randomUUID().toString(), description, amount);
     }
 
-    public FixedExpense(String id, String description, double amount) {
+    public FixedExpense(String id, String description, BigDecimal amount) {
         validate(id, description, amount);
 
         this.id = id;
@@ -30,11 +31,11 @@ public class FixedExpense {
         return description;
     }
     
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
     
-    private static void validate(String id, String description, double amount) {
+    private static void validate(String id, String description, BigDecimal amount) {
         if (id == null || id.isBlank()) {
             throw new InvalidFixedExpenseException("ID cannot be null or blank");
         }
@@ -43,13 +44,21 @@ public class FixedExpense {
             throw new InvalidFixedExpenseException("Description cannot be null or blank");
         }
 
-        if (amount <= 0) {
+        if (amount == null) {
+            throw new InvalidFixedExpenseException("Amount cannot be null");
+        }
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidFixedExpenseException("Amount must be greater than zero");
         }
     }
 
-    public void setAmount(double amount) {
-        if (amount <= 0) {
+    public void setAmount(BigDecimal amount) {
+        if (amount == null) {
+            throw new InvalidFixedExpenseException("Amount cannot be null");
+        }
+        
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidFixedExpenseException("Amount must be greater than zero");
         }
 
