@@ -1,4 +1,4 @@
-package cl.prezdev.balancehub.application.usecases.fixedexpense.update;
+package cl.prezdev.balancehub.application.usecases.recurringexpense.update;
 
 import java.math.BigDecimal;
 

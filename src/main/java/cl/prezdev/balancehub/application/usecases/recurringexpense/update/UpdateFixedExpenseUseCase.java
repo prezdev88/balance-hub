@@ -1,14 +1,14 @@
-package cl.prezdev.balancehub.application.usecases.fixedexpense.update;
+package cl.prezdev.balancehub.application.usecases.recurringexpense.update;
 
 import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException;
-import cl.prezdev.balancehub.application.ports.out.FixedExpenseRepository;
-import cl.prezdev.balancehub.domain.FixedExpense;
+import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
+import cl.prezdev.balancehub.domain.RecurringExpense;
 
 public class UpdateFixedExpenseUseCase {
 
-    private final FixedExpenseRepository repository;
+    private final RecurringExpenseRepository repository;
 
-    public UpdateFixedExpenseUseCase(FixedExpenseRepository repository) {
+    public UpdateFixedExpenseUseCase(RecurringExpenseRepository repository) {
         if (repository == null){
             throw new IllegalArgumentException("repository cannot be null");
         }
@@ -21,7 +21,7 @@ public class UpdateFixedExpenseUseCase {
             throw new IllegalArgumentException("command cannot be null");
         }
 
-        FixedExpense fixedExpense = repository.findById(command.id()).orElseThrow(
+        RecurringExpense fixedExpense = repository.findById(command.id()).orElseThrow(
             () -> new FixedExpenseNotFoundException("FixedExpense with id " + command.id() + " not found")
         );
 

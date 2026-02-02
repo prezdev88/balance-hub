@@ -3,24 +3,27 @@ package cl.prezdev.balancehub.domain;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import cl.prezdev.balancehub.domain.enums.ExpenseType;
 import cl.prezdev.balancehub.domain.exception.InvalidFixedExpenseException;
 
-public class FixedExpense {
+public class RecurringExpense {
 
     private String id;
     private String description;
     private BigDecimal amount;
+    private ExpenseType type;
 
-    public FixedExpense(String description, BigDecimal amount) {
-        this(UUID.randomUUID().toString(), description, amount);
+    public RecurringExpense(String description, BigDecimal amount, ExpenseType type) {
+         this(UUID.randomUUID().toString(), description, amount, type);
     }
 
-    public FixedExpense(String id, String description, BigDecimal amount) {
+    public RecurringExpense(String id, String description, BigDecimal amount, ExpenseType type) {
         validate(id, description, amount);
 
         this.id = id;
         this.description = description;
         this.amount = amount;
+        this.type = type;
     }
 
     public String getId() {
@@ -71,5 +74,17 @@ public class FixedExpense {
         }
 
         this.description = description;
+    }
+
+    public ExpenseType getType() {
+        return type;
+    }
+
+    public boolean isFixed() {
+        return this.type == ExpenseType.FIXED;
+    }
+
+    public boolean isOptional() {
+        return this.type == ExpenseType.OPTIONAL;
     }
 }
