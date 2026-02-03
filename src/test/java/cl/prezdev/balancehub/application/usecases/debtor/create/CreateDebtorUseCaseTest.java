@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.domain.Debtor;
+import cl.prezdev.balancehub.domain.exception.InvalidDebtorException;
 
 class CreateDebtorUseCaseTest {
     
@@ -23,6 +24,11 @@ class CreateDebtorUseCaseTest {
     void setUp() {
         repo = new InMemoryDebtorRepository();
         useCase = new CreateDebtorUseCase(repo);
+    }
+
+    @Test
+    void shouldThrowWhenRepositoryIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new CreateDebtorUseCase(null));
     }
 
     @Test
@@ -47,6 +53,16 @@ class CreateDebtorUseCaseTest {
         assertEquals("Jane Doe", repo.lastSaved.getName());
         assertEquals("jane@doe.com", repo.lastSaved.getEmail());
         assertEquals(1, repo.saved.size());
+    }
+
+    @Test
+    void shouldThrowWhenNameIsInvalid() {
+        assertThrows(InvalidDebtorException.class, () -> useCase.execute(new CreateDebtorCommand("", "e@e.com")));
+    }
+
+    @Test
+    void shouldThrowWhenEmailIsInvalid() {
+        assertThrows(InvalidDebtorException.class, () -> useCase.execute(new CreateDebtorCommand("Name", "")));
     }
 
     static class InMemoryDebtorRepository implements DebtorRepository {
