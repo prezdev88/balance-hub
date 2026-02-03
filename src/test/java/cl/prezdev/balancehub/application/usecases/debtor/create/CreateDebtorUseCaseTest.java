@@ -57,12 +57,14 @@ class CreateDebtorUseCaseTest {
 
     @Test
     void shouldThrowWhenNameIsInvalid() {
-        assertThrows(InvalidDebtorException.class, () -> useCase.execute(new CreateDebtorCommand("", "e@e.com")));
+        var command = new CreateDebtorCommand("", "e@e.com");
+        assertThrows(InvalidDebtorException.class, () -> useCase.execute(command));
     }
 
     @Test
     void shouldThrowWhenEmailIsInvalid() {
-        assertThrows(InvalidDebtorException.class, () -> useCase.execute(new CreateDebtorCommand("Name", "")));
+        var command = new CreateDebtorCommand("Name", "");
+        assertThrows(InvalidDebtorException.class, () -> useCase.execute(command));
     }
 
     static class InMemoryDebtorRepository implements DebtorRepository {

@@ -15,34 +15,42 @@ class SalaryTest {
 
     @Test
     void shouldThrowWhenIdIsNull() {
+        var amount = BigDecimal.valueOf(1000);
+        var createdAt = Instant.now();
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary(null, BigDecimal.valueOf(1000), Instant.now(), true));
+            () -> new Salary(null, amount, createdAt, true));
     }
 
     @Test
     void shouldThrowWhenIdIsBlank() {
+        var amount = BigDecimal.valueOf(1000);
+        var createdAt = Instant.now();
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary("", BigDecimal.valueOf(1000), Instant.now(), true));
+            () -> new Salary("", amount, createdAt, true));
     }
 
     @Test
     void shouldThrowWhenAmountIsNull() {
+        var createdAt = Instant.now();
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary("id", null, Instant.now(), true));
+            () -> new Salary("id", null, createdAt, true));
     }
 
     @Test
     void shouldThrowWhenAmountIsNotPositive() {
+        var createdAt = Instant.now();
+        var negative = BigDecimal.valueOf(-1);
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary("id", BigDecimal.ZERO, Instant.now(), true));
+            () -> new Salary("id", BigDecimal.ZERO, createdAt, true));
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary("id", BigDecimal.valueOf(-1), Instant.now(), true));
+            () -> new Salary("id", negative, createdAt, true));
     }
 
     @Test
     void shouldThrowWhenCreatedAtIsNull() {
+        var amount = BigDecimal.valueOf(1000);
         assertThrows(InvalidSalaryException.class,
-            () -> new Salary("id", BigDecimal.valueOf(1000), null, true));
+            () -> new Salary("id", amount, null, true));
     }
 
     @Test
