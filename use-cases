@@ -14,9 +14,9 @@ Casos de uso:
 - [OK] Listar gastos (fijos)
 
 - [OK] Registrar sueldo mensual
-    El sueldo no es una entrada fija, por lo tanto se debe poder registrar el sueldo. 
+    El sueldo no es una entrada fija, por lo tanto se debe poder registrar
 
-- Actualizar sueldo mensual
+- [OK] Actualizar sueldo mensual (es el mismo caso de uso de crear)
     Modificar el sueldo
 
 Módulo Deudor
