@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import cl.prezdev.balancehub.domain.enums.ExpenseType;
-import cl.prezdev.balancehub.domain.exception.InvalidFixedExpenseException;
+import cl.prezdev.balancehub.domain.exception.InvalidRecurringExpenseException;
 
 public class RecurringExpense {
 
@@ -18,7 +18,7 @@ public class RecurringExpense {
     }
 
     public RecurringExpense(String id, String description, BigDecimal amount, ExpenseType type) {
-        validate(id, description, amount);
+        validate(id, description, amount, type);
 
         this.id = id;
         this.description = description;
@@ -38,31 +38,35 @@ public class RecurringExpense {
         return amount;
     }
     
-    private static void validate(String id, String description, BigDecimal amount) {
+    private static void validate(String id, String description, BigDecimal amount, ExpenseType type) {
         if (id == null || id.isBlank()) {
-            throw new InvalidFixedExpenseException("ID cannot be null or blank");
+            throw new InvalidRecurringExpenseException("ID cannot be null or blank");
         }
 
         if (description == null || description.isBlank()) {
-            throw new InvalidFixedExpenseException("Description cannot be null or blank");
+            throw new InvalidRecurringExpenseException("Description cannot be null or blank");
         }
 
         if (amount == null) {
-            throw new InvalidFixedExpenseException("Amount cannot be null");
+            throw new InvalidRecurringExpenseException("Amount cannot be null");
         }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidFixedExpenseException("Amount must be greater than zero");
+            throw new InvalidRecurringExpenseException("Amount must be greater than zero");
+        }
+
+        if (type == null) {
+            throw new InvalidRecurringExpenseException("Expense type cannot be null");
         }
     }
 
     public void setAmount(BigDecimal amount) {
         if (amount == null) {
-            throw new InvalidFixedExpenseException("Amount cannot be null");
+            throw new InvalidRecurringExpenseException("Amount cannot be null");
         }
         
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidFixedExpenseException("Amount must be greater than zero");
+            throw new InvalidRecurringExpenseException("Amount must be greater than zero");
         }
 
         this.amount = amount; 
@@ -70,7 +74,7 @@ public class RecurringExpense {
 
     public void setDescription(String description) {
         if (description == null || description.isBlank()) {
-            throw new InvalidFixedExpenseException("Description cannot be null or blank");
+            throw new InvalidRecurringExpenseException("Description cannot be null or blank");
         }
 
         this.description = description;

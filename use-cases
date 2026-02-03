@@ -6,8 +6,12 @@ Casos de uso:
 - [OK] Actualizar gasto fijo
     Debe permitir cambiar el monto y el nombre de un gasto fijo
 
-- Crear gasto opcional
+- [OK] Crear gasto opcional
     Se considera gasto opcional Netflix por ejemplo.
+
+- [OK] Listar gastos (opcionales)
+
+- [OK] Listar gastos (fijos)
 
 - [OK] Registrar sueldo mensual
     El sueldo no es una entrada fija, por lo tanto se debe poder registrar el sueldo. 
