@@ -1,5 +1,6 @@
 package cl.prezdev.balancehub.application.ports.out;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,6 @@ public interface RecurringExpenseRepository {
     Optional<RecurringExpense> findById(String id);
 
     List<RecurringExpense> findByType(ExpenseType type);
+
+    BigDecimal totalByType(ExpenseType type);
 }

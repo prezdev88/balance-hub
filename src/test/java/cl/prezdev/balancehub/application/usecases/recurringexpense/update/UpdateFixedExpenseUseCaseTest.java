@@ -100,5 +100,13 @@ class UpdateFixedExpenseUseCaseTest {
         public List<RecurringExpense> findByType(ExpenseType type) {
             return saved.stream().filter(r -> r.getType() == type).toList();
         }
+
+        @Override
+        public BigDecimal totalByType(ExpenseType type) {
+            return saved.stream()
+                .filter(r -> r.getType() == type)
+                .map(RecurringExpense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
     }
 }

@@ -84,6 +84,11 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.12</version>
+				<configuration>
+					<excludes>
+						<exclude>**/BalanceHubApplication.class</exclude>
+					</excludes>
+				</configuration>
 			<executions>
 				<!-- Attach JaCoCo agent when tests run -->
 				<execution>
