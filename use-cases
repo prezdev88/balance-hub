@@ -12,6 +12,8 @@ Casos de uso:
 - [OK] Listar gastos (opcionales)
 
 - [OK] Listar gastos (fijos)
+ 
+- [OK] Obtener el total de gastos segun su tipo (fijos / opcionales)
 
 - [OK] Registrar sueldo mensual
     El sueldo no es una entrada fija, por lo tanto se debe poder registrar
