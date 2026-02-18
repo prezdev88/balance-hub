@@ -28,8 +28,10 @@ Módulo Deudor
 - [OK] Listar deudores
     Listado de deudores
 
-- Crear deuda
+- [OK] Crear deuda
     Una deuda es un compromiso futuro por pagar.
 
     * Ya esta creada Debt e Installment (Cuota). no he hecho nada mas que el dominio
     * Quizás sería interesantes pensar como abordar la creacion de deuda, si las cuotas se calcularan solas, idealmente que si
+
+- [OK] Pagar cuota
