@@ -12,5 +12,5 @@ public interface InstallmentRepository {
 
     void save(Installment installment);
 
-    List<Installment> findByDebtId(String debtId);
+    List<Installment> findByDebtIds(List<String> debtIds);
 }

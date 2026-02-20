@@ -19,18 +19,18 @@ public class Debt {
         this(UUID.randomUUID().toString(), description, totalAmount, debtorId, Instant.now(), false);
     }
 
-    public Debt(String id, String description, BigDecimal amount, String debtorId, Instant createdAt, boolean settled) {
-        validate(id, description, amount, debtorId, createdAt);
+    public Debt(String id, String description, BigDecimal totalAmount, String debtorId, Instant createdAt, boolean settled) {
+        validate(id, description, totalAmount, debtorId, createdAt);
 
         this.id = id;
         this.description = description;
-        this.totalAmount = amount;
+        this.totalAmount = totalAmount;
         this.debtorId = debtorId;
         this.createdAt = createdAt;
         this.settled = settled;
     }
 
-    private static void validate(String id, String description, BigDecimal amount, String debtorId, Instant createdAt) {
+    private static void validate(String id, String description, BigDecimal totalAmount, String debtorId, Instant createdAt) {
         if (id == null || id.isBlank()) {
             throw new InvalidDebtException("Debt ID cannot be null or blank");
         }
@@ -39,8 +39,8 @@ public class Debt {
             throw new InvalidDebtException("Debt description cannot be null or blank");
         }
 
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidDebtException("Debt amount must be greater than zero");
+        if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidDebtException("Debt total amount must be greater than zero");
         }
 
         if (debtorId == null || debtorId.isBlank()) {

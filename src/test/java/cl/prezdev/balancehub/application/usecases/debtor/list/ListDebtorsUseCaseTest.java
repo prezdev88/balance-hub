@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,13 @@ class ListDebtorsUseCaseTest {
         @Override
         public List<Debtor> findAll() {
             return List.copyOf(saved);
+        }
+
+        @Override
+        public Optional<Debtor> findById(String id) {
+            return saved.stream()
+                .filter(d -> d.getId().equals(id))
+                .findFirst();
         }
     }
 }
