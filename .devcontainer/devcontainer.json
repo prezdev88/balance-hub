@@ -1,0 +1,202 @@
+{
+  // Nombre visible del entorno en VS Code.
+  "name": "balance-hub (Java 25)",
+  // Este devcontainer se levanta con Docker Compose (no con imagen directa).
+  "dockerComposeFile": "docker-compose.yml",
+  // Servicio del compose al que VS Code se conectará.
+  "service": "app",
+  // Servicios que se inician al abrir el devcontainer.
+  "runServices": [
+    "app"
+  ],
+  // Al cerrar VS Code, detiene los servicios de Compose de este devcontainer.
+  "shutdownAction": "stopCompose",
+  // Carpeta del proyecto dentro del contenedor.
+  "workspaceFolder": "/workspace",
+  // Puerto típico de Spring Boot.
+  "forwardPorts": [
+    8080
+  ],
+  "portsAttributes": {
+    "8080": {
+      "label": "Spring Boot",
+      "onAutoForward": "notify"
+    }
+  },
+  // Usamos root porque la imagen base ya trae usuarios/UIDs que chocan con UID 1000.
+  // Esto evita errores al crear usuarios custom y simplifica el setup.
+  "remoteUser": "root",
+  "containerUser": "root",
+  // Se ejecuta una vez cuando el contenedor se crea: prepara el wrapper y baja dependencias Maven.
+  "postCreateCommand": "chmod +x mvnw && ./mvnw -q -DskipTests dependency:go-offline",
+  "customizations": {
+    "vscode": {
+      // Settings copiados desde tu perfil "Spring boot (Personal)" para replicar tu entorno.
+      "settings": {
+        "[java]": {
+          "editor.defaultFormatter": "redhat.java"
+        },
+        "terminal.integrated.fontSize": 18,
+        "terminal.explorerKind": "external",
+        "terminal.integrated.defaultProfile.linux": "fish",
+        "editor.tabSize": 4,
+        "editor.mouseWheelZoom": true,
+        "editor.fontSize": 12,
+        "editor.fontFamily": "monospace",
+        "editor.fontVariations": false,
+        "editor.fontWeight": "367",
+        "editor.lineHeight": 22,
+        "editor.parameterHints.enabled": false,
+        "editor.inlayHints.enabled": "off",
+        "editor.tokenColorCustomizations": {
+          "variables": "#9876AA"
+        },
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 200,
+        "gitlens.codeLens.enabled": false,
+        "explorer.compactFolders": false,
+        "explorer.confirmDragAndDrop": false,
+        "git.autofetch": true,
+        "workbench.tree.indent": 14,
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          },
+          "fish": {
+            "path": "fish"
+          }
+        },
+        "workbench.iconTheme": "vsc-jetbrains-icons-enhanced",
+        "redhat.telemetry.enabled": true,
+        "gitlens.ai.model": "vscode",
+        "gitlens.ai.vscode.model": "copilot:gemini-2.5-pro",
+        "git.confirmSync": false,
+        "github.copilot.nextEditSuggestions.enabled": true,
+        "hediet.vscode-drawio.resizeImages": null,
+        "vscode_custom_css.imports": [
+          "file:///home/prezdev/.vscode/extensions/brandonkirbyson.vscode-animations-2.0.7/dist/updateHandler.js"
+        ],
+        "animations.Enabled": true,
+        "database-client.autoSync": true,
+        "pgsql.serverGroups": [
+          {
+            "name": "Servers",
+            "id": "45B4F06C-6874-4980-9711-D25540E01C9D",
+            "isDefault": true
+          }
+        ],
+        "pgsql.connections": [
+          {
+            "id": "59FAB0DA-4C88-423D-A4A7-A16CA92950EB",
+            "groupId": "45B4F06C-6874-4980-9711-D25540E01C9D",
+            "authenticationType": "SqlLogin",
+            "connectTimeout": 15,
+            "applicationName": "vscode-pgsql",
+            "clientEncoding": "utf8",
+            "sslmode": "prefer",
+            "savePassword": true,
+            "server": "localhost",
+            "user": "admin",
+            "port": "5432",
+            "database": "avl_packet_store_db",
+            "password": "",
+            "sshPassword": "",
+            "profileName": "localhost, avl_packet_store_db (admin)",
+            "expiresOn": 0
+          },
+          {
+            "id": "15642A0B-38FD-427D-842B-05F5F7978D19",
+            "groupId": "45B4F06C-6874-4980-9711-D25540E01C9D",
+            "authenticationType": "SqlLogin",
+            "connectTimeout": 15,
+            "applicationName": "vscode-pgsql",
+            "clientEncoding": "utf8",
+            "sslmode": "prefer",
+            "savePassword": true,
+            "server": "localhost",
+            "user": "admin",
+            "password": "",
+            "database": "avl_packet_command_api_db",
+            "profileName": "localhost_avl_packet_command_api_db",
+            "sshPassword": "",
+            "port": "5432",
+            "expiresOn": 0
+          }
+        ],
+        "chat.tools.terminal.autoApprove": {
+          "mvn clean": true,
+          "./tests.sh": true,
+          "mkdir": true,
+          "mv": true,
+          "/^sh \\./mvnw -q test$/": {
+            "approve": true,
+            "matchCommandLine": true
+          },
+          "./mvnw": true,
+          "mvn test": true
+        },
+        "chat.viewSessions.orientation": "stacked",
+        "workbench.colorTheme": "GitHub Dark Default",
+        "window.zoomLevel": 1.5
+      },
+      // Extensiones copiadas desde tu instalación local/perfil para mantener la misma experiencia.
+      "extensions": [
+        "adpyke.codesnap",
+        "alefragnani.bookmarks",
+        "atommaterial.a-file-icon-vscode",
+        "be5invis.vscode-custom-css",
+        "bierner.markdown-mermaid",
+        "brandonkirbyson.vscode-animations",
+        "brennondenny.vsc-jetbrains-icons-enhanced",
+        "chadalen.vscode-jetbrains-icon-theme",
+        "cweijan.dbclient-jdbc",
+        "cweijan.vscode-postgresql-client2",
+        "docker.docker",
+        "eamodio.gitlens",
+        "emmanuelbeziat.vscode-great-icons",
+        "file-icons.file-icons",
+        "garytyler.darcula-pycharm",
+        "github.copilot-chat",
+        "github.github-vscode-theme",
+        "gruntfuggly.todo-tree",
+        "hediet.vscode-drawio",
+        "humao.rest-client",
+        "hyperdarker.intellij-neo-dark",
+        "magicstack.magicpython",
+        "ms-azuretools.vscode-containers",
+        "ms-ossdata.vscode-pgsql",
+        "ms-python.debugpy",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.vscode-python-envs",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode.extension-test-runner",
+        "ms-vscode.remote-explorer",
+        "pkief.material-icon-theme",
+        "pkief.material-product-icons",
+        "prezdev.devtour",
+        "redhat.java",
+        "redhat.vscode-xml",
+        "sonarsource.sonarlint-vscode",
+        "tal7aouy.icons",
+        "teabyii.ayu",
+        "visualstudioexptteam.intellicode-api-usage-examples",
+        "visualstudioexptteam.vscodeintellicode",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-dependency",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-lombok",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vscjava.vscode-spring-initializr",
+        "wayou.vscode-icons-mac"
+      ]
+    }
+  }
+}
