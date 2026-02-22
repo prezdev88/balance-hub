@@ -19,29 +19,5 @@ services:
       timeout: 5s
       retries: 20
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: balance-hub-app
-    user: "${UID:-1000}:${GID:-984}"
-    working_dir: /app
-    command: ["./mvnw", "-Dmaven.repo.local=/tmp/.m2", "spring-boot:run"]
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      # Variables listas para cuando agregues infrastructure/persistencia.
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/balance_hub
-      SPRING_DATASOURCE_USERNAME: balancehub
-      SPRING_DATASOURCE_PASSWORD: balancehub
-    volumes:
-      - ./:/app
-      - maven_cache:/tmp/.m2
-    depends_on:
-      db:
-        condition: service_healthy
-
 volumes:
   postgres_data:
-  maven_cache:
