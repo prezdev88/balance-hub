@@ -2,6 +2,7 @@ package cl.prezdev.balancehub.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,5 +74,19 @@ class RecurringExpenseTest {
 
         assertEquals("d", fixed.getDescription());
         assertEquals(0, fixed.getAmount().compareTo(BigDecimal.TEN));
+    }
+
+    @Test
+    void shouldCreateWithGeneratedIdAndAllowValidUpdates() {
+        var recurring = new RecurringExpense("Gym", BigDecimal.valueOf(20), ExpenseType.OPTIONAL);
+
+        assertNotNull(recurring.getId());
+
+        recurring.setDescription("Gym Premium");
+        recurring.setAmount(BigDecimal.valueOf(25));
+
+        assertEquals("Gym Premium", recurring.getDescription());
+        assertEquals(0, recurring.getAmount().compareTo(BigDecimal.valueOf(25)));
+        assertEquals(ExpenseType.OPTIONAL, recurring.getType());
     }
 }

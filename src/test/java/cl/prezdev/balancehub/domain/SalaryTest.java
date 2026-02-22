@@ -63,4 +63,15 @@ class SalaryTest {
         assertNotNull(salary.getCreatedAt());
         assertEquals(true, salary.isActive());
     }
+
+    @Test
+    void fullConstructorKeepsProvidedValues() {
+        var createdAt = Instant.parse("2026-02-22T00:00:00Z");
+        var salary = new Salary("salary-1", BigDecimal.valueOf(3000), createdAt, false);
+
+        assertEquals("salary-1", salary.getId());
+        assertEquals(0, salary.getAmount().compareTo(BigDecimal.valueOf(3000)));
+        assertEquals(createdAt, salary.getCreatedAt());
+        assertEquals(false, salary.isActive());
+    }
 }
