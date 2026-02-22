@@ -11,9 +11,13 @@ public class Debtor {
     private final String email;
 
     public Debtor(String name, String email) {
-        validate(name, email);
+        this(UUID.randomUUID().toString(), name, email);
+    }
 
-        this.id = UUID.randomUUID().toString();
+    public Debtor(String id, String name, String email) {
+        validate(id, name, email);
+
+        this.id = id;
         this.name = name;
         this.email = email;
     }
@@ -30,7 +34,11 @@ public class Debtor {
         return email;
     }
 
-    private static void validate(String name, String email) {
+    private static void validate(String id, String name, String email) {
+        if (id == null || id.isBlank()) {
+            throw new InvalidDebtorException("Debtor id cannot be null or blank");
+        }
+
         if (name == null || name.isBlank()) {
             throw new InvalidDebtorException("Debtor name cannot be null or blank");
         }
