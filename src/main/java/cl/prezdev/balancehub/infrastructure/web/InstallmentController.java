@@ -3,7 +3,6 @@ package cl.prezdev.balancehub.infrastructure.web;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +23,6 @@ public class InstallmentController {
     }
 
     @PatchMapping("/{installmentId}/pay")
-    @Transactional
     public ResponseEntity<Void> pay(@PathVariable String installmentId, @RequestBody PayInstallmentRequest request) {
         payInstallmentUseCase.execute(new PayInstallmentCommand(installmentId, request.paymentDate()));
         return ResponseEntity.noContent().build();

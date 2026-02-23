@@ -1,7 +1,11 @@
 package cl.prezdev.balancehub.infrastructure.config;
 
+import java.util.Objects;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
@@ -33,8 +37,13 @@ import cl.prezdev.balancehub.application.usecases.salary.create.CreateSalaryUseC
 public class UseCaseConfiguration {
 
     @Bean
-    CreateDebtorInputPort createDebtorUseCase(DebtorRepository debtorRepository) {
-        return new CreateDebtorUseCase(debtorRepository);
+    CreateDebtorInputPort createDebtorUseCase(
+        DebtorRepository debtorRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreateDebtorUseCase delegate = new CreateDebtorUseCase(debtorRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean
@@ -43,8 +52,14 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    CreateDebtInputPort createDebtUseCase(DebtRepository debtRepository, InstallmentRepository installmentRepository) {
-        return new CreateDebtUseCase(debtRepository, installmentRepository);
+    CreateDebtInputPort createDebtUseCase(
+        DebtRepository debtRepository,
+        InstallmentRepository installmentRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreateDebtUseCase delegate = new CreateDebtUseCase(debtRepository, installmentRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean
@@ -57,13 +72,23 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    PayInstallmentInputPort payInstallmentUseCase(InstallmentRepository installmentRepository) {
-        return new PayInstallmentUseCase(installmentRepository);
+    PayInstallmentInputPort payInstallmentUseCase(
+        InstallmentRepository installmentRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        PayInstallmentUseCase delegate = new PayInstallmentUseCase(installmentRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> tx.executeWithoutResult(status -> delegate.execute(command));
     }
 
     @Bean
-    CreateRecurringExpenseInputPort createRecurringExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
-        return new CreateRecurringExpenseUseCase(recurringExpenseRepository);
+    CreateRecurringExpenseInputPort createRecurringExpenseUseCase(
+        RecurringExpenseRepository recurringExpenseRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreateRecurringExpenseUseCase delegate = new CreateRecurringExpenseUseCase(recurringExpenseRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean
@@ -72,8 +97,13 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    UpdateFixedExpenseInputPort updateFixedExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
-        return new UpdateFixedExpenseUseCase(recurringExpenseRepository);
+    UpdateFixedExpenseInputPort updateFixedExpenseUseCase(
+        RecurringExpenseRepository recurringExpenseRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        UpdateFixedExpenseUseCase delegate = new UpdateFixedExpenseUseCase(recurringExpenseRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean
@@ -82,7 +112,12 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    CreateSalaryInputPort createSalaryUseCase(SalaryRepository salaryRepository) {
-        return new CreateSalaryUseCase(salaryRepository);
+    CreateSalaryInputPort createSalaryUseCase(
+        SalaryRepository salaryRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreateSalaryUseCase delegate = new CreateSalaryUseCase(salaryRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 }

@@ -2,9 +2,9 @@ package cl.prezdev.balancehub.infrastructure.web;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +22,7 @@ import cl.prezdev.balancehub.application.usecases.recurringexpense.create.Create
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseResult;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesResult;
+import cl.prezdev.balancehub.application.usecases.recurringexpense.list.RecurringExpenseListItem;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalResult;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.update.UpdateFixedExpenseCommand;
@@ -50,41 +51,60 @@ public class RecurringExpenseController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<CreateRecurringExpenseResult> create(@RequestBody CreateRecurringExpenseRequest request) {
+    public ResponseEntity<CreateRecurringExpenseHttpResponse> create(@RequestBody CreateRecurringExpenseRequest request) {
         var result = createUseCase.execute(
             new CreateRecurringExpenseCommand(request.description(), request.amount(), request.type())
         );
 
         return ResponseEntity
             .created(URI.create("/api/recurring-expenses/" + result.recurringExpenseId()))
-            .body(result);
+            .body(new CreateRecurringExpenseHttpResponse(result.recurringExpenseId()));
     }
 
     @GetMapping
-    public ResponseEntity<ListRecurringExpensesResult> listByType(@RequestParam ExpenseType type) {
-        return ResponseEntity.ok(listUseCase.execute(new ListRecurringExpensesCommand(type)));
+    public ResponseEntity<ListRecurringExpensesHttpResponse> listByType(@RequestParam ExpenseType type) {
+        ListRecurringExpensesResult result = listUseCase.execute(new ListRecurringExpensesCommand(type));
+        return ResponseEntity.ok(
+            new ListRecurringExpensesHttpResponse(
+                result.recurringExpenses().stream().map(RecurringExpenseController::toHttpItem).toList()
+            )
+        );
     }
 
     @GetMapping("/total")
-    public ResponseEntity<GetRecurringExpenseTotalResult> totalByType(@RequestParam ExpenseType type) {
-        return ResponseEntity.ok(totalUseCase.execute(new GetRecurringExpenseTotalCommand(type)));
+    public ResponseEntity<GetRecurringExpenseTotalHttpResponse> totalByType(@RequestParam ExpenseType type) {
+        GetRecurringExpenseTotalResult result = totalUseCase.execute(new GetRecurringExpenseTotalCommand(type));
+        return ResponseEntity.ok(new GetRecurringExpenseTotalHttpResponse(result.total()));
     }
 
     @PatchMapping("/{id}")
-    @Transactional
-    public ResponseEntity<UpdateFixedExpenseResult> updateFixedExpense(
+    public ResponseEntity<UpdateFixedExpenseHttpResponse> updateFixedExpense(
         @PathVariable String id,
         @RequestBody UpdateFixedExpenseRequest request
     ) {
-        return ResponseEntity.ok(
-            updateFixedExpenseUseCase.execute(
-                new UpdateFixedExpenseCommand(id, request.description(), request.amount())
-            )
+        UpdateFixedExpenseResult result = updateFixedExpenseUseCase.execute(
+            new UpdateFixedExpenseCommand(id, request.description(), request.amount())
         );
+        return ResponseEntity.ok(
+            new UpdateFixedExpenseHttpResponse(result.id(), result.description(), result.amount())
+        );
+    }
+
+    private static RecurringExpenseHttpItem toHttpItem(RecurringExpenseListItem item) {
+        return new RecurringExpenseHttpItem(item.id(), item.description(), item.amount());
     }
 
     public record CreateRecurringExpenseRequest(String description, BigDecimal amount, ExpenseType type) {}
 
     public record UpdateFixedExpenseRequest(String description, BigDecimal amount) {}
+
+    public record CreateRecurringExpenseHttpResponse(String recurringExpenseId) {}
+
+    public record ListRecurringExpensesHttpResponse(List<RecurringExpenseHttpItem> recurringExpenses) {}
+
+    public record RecurringExpenseHttpItem(String id, String description, BigDecimal amount) {}
+
+    public record GetRecurringExpenseTotalHttpResponse(BigDecimal total) {}
+
+    public record UpdateFixedExpenseHttpResponse(String id, String description, BigDecimal amount) {}
 }

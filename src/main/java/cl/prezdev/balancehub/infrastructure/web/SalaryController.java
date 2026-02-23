@@ -2,9 +2,9 @@ package cl.prezdev.balancehub.infrastructure.web;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,14 +25,15 @@ public class SalaryController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<CreateSalaryResult> create(@RequestBody CreateSalaryRequest request) {
+    public ResponseEntity<CreateSalaryHttpResponse> create(@RequestBody CreateSalaryRequest request) {
         var result = createSalaryUseCase.execute(new CreateSalaryCommand(request.amount()));
 
         return ResponseEntity
             .created(URI.create("/api/salaries/" + result.id()))
-            .body(result);
+            .body(new CreateSalaryHttpResponse(result.id(), result.amount(), result.createdAt()));
     }
 
     public record CreateSalaryRequest(BigDecimal amount) {}
+
+    public record CreateSalaryHttpResponse(String id, BigDecimal amount, Instant createdAt) {}
 }
