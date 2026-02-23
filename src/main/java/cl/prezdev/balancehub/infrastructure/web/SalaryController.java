@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
 import cl.prezdev.balancehub.application.usecases.salary.create.CreateSalaryCommand;
 import cl.prezdev.balancehub.application.usecases.salary.create.CreateSalaryResult;
-import cl.prezdev.balancehub.application.usecases.salary.create.CreateSalaryUseCase;
 
 @RestController
 @RequestMapping("/api/salaries")
 public class SalaryController {
 
-    private final CreateSalaryUseCase createSalaryUseCase;
+    private final CreateSalaryInputPort createSalaryUseCase;
 
-    public SalaryController(CreateSalaryUseCase createSalaryUseCase) {
+    public SalaryController(CreateSalaryInputPort createSalaryUseCase) {
         this.createSalaryUseCase = createSalaryUseCase;
     }
 

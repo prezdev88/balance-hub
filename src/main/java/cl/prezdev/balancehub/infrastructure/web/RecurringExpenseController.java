@@ -14,34 +14,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
+import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseResult;
-import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesResult;
-import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalResult;
-import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.update.UpdateFixedExpenseCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.update.UpdateFixedExpenseResult;
-import cl.prezdev.balancehub.application.usecases.recurringexpense.update.UpdateFixedExpenseUseCase;
 import cl.prezdev.balancehub.domain.enums.ExpenseType;
 
 @RestController
 @RequestMapping("/api/recurring-expenses")
 public class RecurringExpenseController {
 
-    private final CreateRecurringExpenseUseCase createUseCase;
-    private final ListRecurringExpensesUseCase listUseCase;
-    private final UpdateFixedExpenseUseCase updateFixedExpenseUseCase;
-    private final GetRecurringExpenseTotalUseCase totalUseCase;
+    private final CreateRecurringExpenseInputPort createUseCase;
+    private final ListRecurringExpensesInputPort listUseCase;
+    private final UpdateFixedExpenseInputPort updateFixedExpenseUseCase;
+    private final GetRecurringExpenseTotalInputPort totalUseCase;
 
     public RecurringExpenseController(
-        CreateRecurringExpenseUseCase createUseCase,
-        ListRecurringExpensesUseCase listUseCase,
-        UpdateFixedExpenseUseCase updateFixedExpenseUseCase,
-        GetRecurringExpenseTotalUseCase totalUseCase
+        CreateRecurringExpenseInputPort createUseCase,
+        ListRecurringExpensesInputPort listUseCase,
+        UpdateFixedExpenseInputPort updateFixedExpenseUseCase,
+        GetRecurringExpenseTotalInputPort totalUseCase
     ) {
         this.createUseCase = createUseCase;
         this.listUseCase = listUseCase;

@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
 import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorCommand;
 import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorResult;
-import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorUseCase;
 import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsResult;
-import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsUseCase;
 
 @RestController
 @RequestMapping("/api/debtors")
 public class DebtorController {
 
-    private final CreateDebtorUseCase createDebtorUseCase;
-    private final ListDebtorsUseCase listDebtorsUseCase;
+    private final CreateDebtorInputPort createDebtorUseCase;
+    private final ListDebtorsInputPort listDebtorsUseCase;
 
-    public DebtorController(CreateDebtorUseCase createDebtorUseCase, ListDebtorsUseCase listDebtorsUseCase) {
+    public DebtorController(CreateDebtorInputPort createDebtorUseCase, ListDebtorsInputPort listDebtorsUseCase) {
         this.createDebtorUseCase = createDebtorUseCase;
         this.listDebtorsUseCase = listDebtorsUseCase;
     }

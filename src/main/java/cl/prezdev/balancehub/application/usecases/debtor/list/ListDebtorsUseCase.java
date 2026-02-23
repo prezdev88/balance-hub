@@ -2,10 +2,11 @@ package cl.prezdev.balancehub.application.usecases.debtor.list;
 
 import java.util.List;
 
+import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.domain.Debtor;
 
-public class ListDebtorsUseCase {
+public class ListDebtorsUseCase implements ListDebtorsInputPort {
 
     private final DebtorRepository repository;
 
@@ -17,6 +18,7 @@ public class ListDebtorsUseCase {
         this.repository = repository;
     }
 
+    @Override
     public ListDebtorsResult execute() {
         var debtors = repository.findAll();
         var debtorsInfo = map(debtors);

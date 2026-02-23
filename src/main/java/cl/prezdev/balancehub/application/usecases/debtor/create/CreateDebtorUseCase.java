@@ -1,9 +1,10 @@
 package cl.prezdev.balancehub.application.usecases.debtor.create;
 
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
+import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
 import cl.prezdev.balancehub.domain.Debtor;
 
-public class CreateDebtorUseCase {
+public class CreateDebtorUseCase implements CreateDebtorInputPort {
 
     private final DebtorRepository repository;
 
@@ -15,6 +16,7 @@ public class CreateDebtorUseCase {
         this.repository = repository;
     }
 
+    @Override
     public CreateDebtorResult execute(CreateDebtorCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command must not be null");   

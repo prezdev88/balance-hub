@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetDebtsInputPort;
 import cl.prezdev.balancehub.application.usecases.debt.create.CreateDebtResult;
-import cl.prezdev.balancehub.application.usecases.debt.create.CreateDebtUseCase;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.CreateDebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.DebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.InstallmentCommand;
 import cl.prezdev.balancehub.application.usecases.debt.get.GetDebtsCommand;
 import cl.prezdev.balancehub.application.usecases.debt.get.GetDebtsResult;
-import cl.prezdev.balancehub.application.usecases.debt.get.GetDebtsUseCase;
 
 @RestController
 @RequestMapping("/api/debts")
 public class DebtController {
 
-    private final CreateDebtUseCase createDebtUseCase;
-    private final GetDebtsUseCase getDebtsUseCase;
+    private final CreateDebtInputPort createDebtUseCase;
+    private final GetDebtsInputPort getDebtsUseCase;
 
-    public DebtController(CreateDebtUseCase createDebtUseCase, GetDebtsUseCase getDebtsUseCase) {
+    public DebtController(CreateDebtInputPort createDebtUseCase, GetDebtsInputPort getDebtsUseCase) {
         this.createDebtUseCase = createDebtUseCase;
         this.getDebtsUseCase = getDebtsUseCase;
     }

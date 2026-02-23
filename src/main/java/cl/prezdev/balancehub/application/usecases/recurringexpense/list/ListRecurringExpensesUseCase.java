@@ -1,8 +1,9 @@
 package cl.prezdev.balancehub.application.usecases.recurringexpense.list;
 
+import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
 
-public class ListRecurringExpensesUseCase {
+public class ListRecurringExpensesUseCase implements ListRecurringExpensesInputPort {
 
     private final RecurringExpenseRepository repository;
 
@@ -14,6 +15,7 @@ public class ListRecurringExpensesUseCase {
         this.repository = repository;
     }
 
+    @Override
     public ListRecurringExpensesResult execute(ListRecurringExpensesCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command must not be null");

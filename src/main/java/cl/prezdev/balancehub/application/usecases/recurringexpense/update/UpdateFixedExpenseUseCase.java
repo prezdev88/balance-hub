@@ -1,10 +1,11 @@
 package cl.prezdev.balancehub.application.usecases.recurringexpense.update;
 
 import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException;
+import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
 import cl.prezdev.balancehub.domain.RecurringExpense;
 
-public class UpdateFixedExpenseUseCase {
+public class UpdateFixedExpenseUseCase implements UpdateFixedExpenseInputPort {
 
     private final RecurringExpenseRepository repository;
 
@@ -16,6 +17,7 @@ public class UpdateFixedExpenseUseCase {
         this.repository = repository;
     }
 
+    @Override
     public UpdateFixedExpenseResult execute(UpdateFixedExpenseCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command cannot be null");

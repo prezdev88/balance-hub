@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import cl.prezdev.balancehub.application.exception.DebtorNotFoundException;
+import cl.prezdev.balancehub.application.ports.in.GetDebtsInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
@@ -13,7 +14,7 @@ import cl.prezdev.balancehub.domain.Debt;
 import cl.prezdev.balancehub.domain.Debtor;
 import cl.prezdev.balancehub.domain.Installment;
 
-public class GetDebtsUseCase {
+public class GetDebtsUseCase implements GetDebtsInputPort {
 
     private final DebtRepository debtRepository;
     private final DebtorRepository debtorRepository;
@@ -25,6 +26,7 @@ public class GetDebtsUseCase {
         this.installmentRepository = installmentRepository;
     }
 
+    @Override
     public GetDebtsResult execute(GetDebtsCommand command) {
         Debtor debtor = debtorRepository.findById(command.debtorId())
             .orElseThrow(() -> new DebtorNotFoundException("Debtor not found with id: " + command.debtorId()));

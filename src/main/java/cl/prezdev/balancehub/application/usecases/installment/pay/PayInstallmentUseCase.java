@@ -1,9 +1,10 @@
 package cl.prezdev.balancehub.application.usecases.installment.pay;
 
 import cl.prezdev.balancehub.application.exception.InstallmentNotFoundException;
+import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
 
-public class PayInstallmentUseCase {
+public class PayInstallmentUseCase implements PayInstallmentInputPort {
 
     private final InstallmentRepository repository;
 
@@ -14,6 +15,7 @@ public class PayInstallmentUseCase {
         this.repository = repository;
     }
 
+    @Override
     public void execute(PayInstallmentCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command must not be null");

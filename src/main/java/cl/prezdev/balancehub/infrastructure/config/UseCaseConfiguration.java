@@ -3,6 +3,16 @@ package cl.prezdev.balancehub.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
+import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
+import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetDebtsInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
+import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
+import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
@@ -23,22 +33,22 @@ import cl.prezdev.balancehub.application.usecases.salary.create.CreateSalaryUseC
 public class UseCaseConfiguration {
 
     @Bean
-    CreateDebtorUseCase createDebtorUseCase(DebtorRepository debtorRepository) {
+    CreateDebtorInputPort createDebtorUseCase(DebtorRepository debtorRepository) {
         return new CreateDebtorUseCase(debtorRepository);
     }
 
     @Bean
-    ListDebtorsUseCase listDebtorsUseCase(DebtorRepository debtorRepository) {
+    ListDebtorsInputPort listDebtorsUseCase(DebtorRepository debtorRepository) {
         return new ListDebtorsUseCase(debtorRepository);
     }
 
     @Bean
-    CreateDebtUseCase createDebtUseCase(DebtRepository debtRepository, InstallmentRepository installmentRepository) {
+    CreateDebtInputPort createDebtUseCase(DebtRepository debtRepository, InstallmentRepository installmentRepository) {
         return new CreateDebtUseCase(debtRepository, installmentRepository);
     }
 
     @Bean
-    GetDebtsUseCase getDebtsUseCase(
+    GetDebtsInputPort getDebtsUseCase(
         DebtRepository debtRepository,
         DebtorRepository debtorRepository,
         InstallmentRepository installmentRepository
@@ -47,32 +57,32 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    PayInstallmentUseCase payInstallmentUseCase(InstallmentRepository installmentRepository) {
+    PayInstallmentInputPort payInstallmentUseCase(InstallmentRepository installmentRepository) {
         return new PayInstallmentUseCase(installmentRepository);
     }
 
     @Bean
-    CreateRecurringExpenseUseCase createRecurringExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
+    CreateRecurringExpenseInputPort createRecurringExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
         return new CreateRecurringExpenseUseCase(recurringExpenseRepository);
     }
 
     @Bean
-    ListRecurringExpensesUseCase listRecurringExpensesUseCase(RecurringExpenseRepository recurringExpenseRepository) {
+    ListRecurringExpensesInputPort listRecurringExpensesUseCase(RecurringExpenseRepository recurringExpenseRepository) {
         return new ListRecurringExpensesUseCase(recurringExpenseRepository);
     }
 
     @Bean
-    UpdateFixedExpenseUseCase updateFixedExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
+    UpdateFixedExpenseInputPort updateFixedExpenseUseCase(RecurringExpenseRepository recurringExpenseRepository) {
         return new UpdateFixedExpenseUseCase(recurringExpenseRepository);
     }
 
     @Bean
-    GetRecurringExpenseTotalUseCase getRecurringExpenseTotalUseCase(RecurringExpenseRepository recurringExpenseRepository) {
+    GetRecurringExpenseTotalInputPort getRecurringExpenseTotalUseCase(RecurringExpenseRepository recurringExpenseRepository) {
         return new GetRecurringExpenseTotalUseCase(recurringExpenseRepository);
     }
 
     @Bean
-    CreateSalaryUseCase createSalaryUseCase(SalaryRepository salaryRepository) {
+    CreateSalaryInputPort createSalaryUseCase(SalaryRepository salaryRepository) {
         return new CreateSalaryUseCase(salaryRepository);
     }
 }

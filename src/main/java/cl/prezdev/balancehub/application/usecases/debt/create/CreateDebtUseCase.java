@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.CreateDebtCommand;
@@ -12,7 +13,7 @@ import cl.prezdev.balancehub.application.usecases.debt.create.command.Installmen
 import cl.prezdev.balancehub.domain.Debt;
 import cl.prezdev.balancehub.domain.Installment;
 
-public class CreateDebtUseCase {
+public class CreateDebtUseCase implements CreateDebtInputPort {
 
     private final DebtRepository debtRepository;
     private final InstallmentRepository installmentRepository;
@@ -30,6 +31,7 @@ public class CreateDebtUseCase {
         this.installmentRepository = installmentRepository;
     }
 
+    @Override
     public CreateDebtResult execute(CreateDebtCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("command must not be null");   

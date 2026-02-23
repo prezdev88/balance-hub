@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentCommand;
-import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentUseCase;
 
 @RestController
 @RequestMapping("/api/installments")
 public class InstallmentController {
 
-    private final PayInstallmentUseCase payInstallmentUseCase;
+    private final PayInstallmentInputPort payInstallmentUseCase;
 
-    public InstallmentController(PayInstallmentUseCase payInstallmentUseCase) {
+    public InstallmentController(PayInstallmentInputPort payInstallmentUseCase) {
         this.payInstallmentUseCase = payInstallmentUseCase;
     }
 
