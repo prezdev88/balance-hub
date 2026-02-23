@@ -1,0 +1,25 @@
+{
+  "name": "balance-hub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prezdev88/balance-hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/prezdev88/balance-hub/issues"
+  },
+  "homepage": "https://github.com/prezdev88/balance-hub#readme",
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
+}
