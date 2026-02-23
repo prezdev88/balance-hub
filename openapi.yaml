@@ -1,0 +1,550 @@
+openapi: 3.0.3
+info:
+  title: Balance Hub API
+  version: 0.1.0
+  description: API HTTP para los casos de uso actuales de Balance Hub.
+
+servers:
+  - url: http://localhost:8080
+    description: Local
+
+tags:
+  - name: Debtors
+  - name: Debts
+  - name: Installments
+  - name: Recurring Expenses
+  - name: Salaries
+
+paths:
+  /api/debtors:
+    post:
+      tags: [Debtors]
+      summary: Create debtor
+      operationId: createDebtor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDebtorRequest'
+            example:
+              name: John Doe
+              email: john@doe.com
+      responses:
+        '201':
+          description: Debtor created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL del recurso creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDebtorResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags: [Debtors]
+      summary: List debtors
+      operationId: listDebtors
+      responses:
+        '200':
+          description: Debtors list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDebtorsResult'
+
+  /api/debts:
+    post:
+      tags: [Debts]
+      summary: Create debt with installments
+      operationId: createDebt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDebtRequest'
+            example:
+              debt:
+                debtorId: debtor-123
+                description: Laptop
+                totalAmount: 1200.00
+              installments:
+                installmentsCount: 3
+                installmentAmount: 400.00
+                firstInstallmentDueDate: 2026-03-10
+      responses:
+        '201':
+          description: Debt created
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDebtResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags: [Debts]
+      summary: Get debts by debtor and date range
+      operationId: getDebts
+      parameters:
+        - in: query
+          name: debtorId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: startDate
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Debts for debtor in range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDebtsResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/installments/{installmentId}/pay:
+    patch:
+      tags: [Installments]
+      summary: Pay installment
+      operationId: payInstallment
+      parameters:
+        - in: path
+          name: installmentId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayInstallmentRequest'
+            example:
+              paymentDate: 2026-02-22T20:30:00Z
+      responses:
+        '204':
+          description: Installment paid
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/recurring-expenses:
+    post:
+      tags: [Recurring Expenses]
+      summary: Create recurring expense
+      operationId: createRecurringExpense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecurringExpenseRequest'
+            example:
+              description: Rent
+              amount: 500.00
+              type: FIXED
+      responses:
+        '201':
+          description: Recurring expense created
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRecurringExpenseResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    get:
+      tags: [Recurring Expenses]
+      summary: List recurring expenses by type
+      operationId: listRecurringExpenses
+      parameters:
+        - in: query
+          name: type
+          required: true
+          schema:
+            $ref: '#/components/schemas/ExpenseType'
+      responses:
+        '200':
+          description: Recurring expenses list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListRecurringExpensesResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/recurring-expenses/total:
+    get:
+      tags: [Recurring Expenses]
+      summary: Get recurring expense total by type
+      operationId: getRecurringExpenseTotal
+      parameters:
+        - in: query
+          name: type
+          required: true
+          schema:
+            $ref: '#/components/schemas/ExpenseType'
+      responses:
+        '200':
+          description: Total recurring expense amount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRecurringExpenseTotalResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/recurring-expenses/{id}:
+    patch:
+      tags: [Recurring Expenses]
+      summary: Update fixed expense
+      operationId: updateFixedExpense
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFixedExpenseRequest'
+            example:
+              description: Rent (updated)
+              amount: 550.00
+      responses:
+        '200':
+          description: Fixed expense updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFixedExpenseResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/salaries:
+    post:
+      tags: [Salaries]
+      summary: Create salary (deactivates current active salary)
+      operationId: createSalary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSalaryRequest'
+            example:
+              amount: 2500.00
+      responses:
+        '201':
+          description: Salary created
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSalaryResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiErrorResponse'
+
+  schemas:
+    ExpenseType:
+      type: string
+      enum: [FIXED, OPTIONAL]
+
+    ApiErrorResponse:
+      type: object
+      required: [timestamp, status, error, message]
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+          format: int32
+        error:
+          type: string
+        message:
+          type: string
+
+    CreateDebtorRequest:
+      type: object
+      required: [name, email]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    CreateDebtorResult:
+      type: object
+      required: [debtorId]
+      properties:
+        debtorId:
+          type: string
+
+    DebtorListItem:
+      type: object
+      required: [id, name, email]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    ListDebtorsResult:
+      type: object
+      required: [debtors]
+      properties:
+        debtors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebtorListItem'
+
+    CreateDebtRequest:
+      type: object
+      required: [debt, installments]
+      properties:
+        debt:
+          $ref: '#/components/schemas/CreateDebtDebtPayload'
+        installments:
+          $ref: '#/components/schemas/CreateDebtInstallmentsPayload'
+
+    CreateDebtDebtPayload:
+      type: object
+      required: [debtorId, description, totalAmount]
+      properties:
+        debtorId:
+          type: string
+        description:
+          type: string
+        totalAmount:
+          type: number
+          format: double
+
+    CreateDebtInstallmentsPayload:
+      type: object
+      required: [installmentsCount, installmentAmount, firstInstallmentDueDate]
+      properties:
+        installmentsCount:
+          type: integer
+          format: int32
+        installmentAmount:
+          type: number
+          format: double
+        firstInstallmentDueDate:
+          type: string
+          format: date
+
+    CreateDebtResult:
+      type: object
+      required: [debtId]
+      properties:
+        debtId:
+          type: string
+
+    InstallmentItem:
+      type: object
+      required: [id, number, dueDate, amount]
+      properties:
+        id:
+          type: string
+        number:
+          type: integer
+          format: int32
+        dueDate:
+          type: string
+          format: date
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+        amount:
+          type: number
+          format: double
+
+    DebtItem:
+      type: object
+      required: [id, description, totalAmount, createdAt, settled, installments]
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        totalAmount:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+        settled:
+          type: boolean
+        installments:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallmentItem'
+
+    GetDebtsResult:
+      type: object
+      required: [id, name, email, debts]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        debts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebtItem'
+
+    PayInstallmentRequest:
+      type: object
+      required: [paymentDate]
+      properties:
+        paymentDate:
+          type: string
+          format: date-time
+
+    CreateRecurringExpenseRequest:
+      type: object
+      required: [description, amount, type]
+      properties:
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+        type:
+          $ref: '#/components/schemas/ExpenseType'
+
+    CreateRecurringExpenseResult:
+      type: object
+      required: [recurringExpenseId]
+      properties:
+        recurringExpenseId:
+          type: string
+
+    RecurringExpenseListItem:
+      type: object
+      required: [id, description, amount]
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+
+    ListRecurringExpensesResult:
+      type: object
+      required: [recurringExpenses]
+      properties:
+        recurringExpenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringExpenseListItem'
+
+    UpdateFixedExpenseRequest:
+      type: object
+      required: [description, amount]
+      properties:
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+
+    UpdateFixedExpenseResult:
+      type: object
+      required: [id, description, amount]
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+
+    GetRecurringExpenseTotalResult:
+      type: object
+      required: [total]
+      properties:
+        total:
+          type: number
+          format: double
+
+    CreateSalaryRequest:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: number
+          format: double
+
+    CreateSalaryResult:
+      type: object
+      required: [id, amount, createdAt]
+      properties:
+        id:
+          type: string
+        amount:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
