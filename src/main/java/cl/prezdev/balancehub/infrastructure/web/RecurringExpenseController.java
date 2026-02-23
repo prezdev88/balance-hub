@@ -19,7 +19,6 @@ import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputP
 import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseCommand;
-import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseResult;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesResult;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.RecurringExpenseListItem;
