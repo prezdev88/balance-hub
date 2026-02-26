@@ -32,6 +32,11 @@ public class RecurringExpenseJpaAdapter implements RecurringExpenseRepository {
     }
 
     @Override
+    public void deleteById(String id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public Optional<RecurringExpense> findById(String id) {
         return repository.findById(id).map(this::toDomain);
     }

@@ -12,6 +12,8 @@ public interface RecurringExpenseRepository {
 
     void update(RecurringExpense recurringExpense);
 
+    void deleteById(String id);
+
     Optional<RecurringExpense> findById(String id);
 
     List<RecurringExpense> findByType(ExpenseType type);

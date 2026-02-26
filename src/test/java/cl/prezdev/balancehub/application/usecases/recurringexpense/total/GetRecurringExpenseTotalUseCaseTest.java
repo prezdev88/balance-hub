@@ -86,6 +86,11 @@ class GetRecurringExpenseTotalUseCaseTest {
         }
 
         @Override
+        public void deleteById(String id) {
+            saved.removeIf(item -> item.getId().equals(id));
+        }
+
+        @Override
         public Optional<RecurringExpense> findById(String id) {
             return saved.stream().filter(r -> r.getId().equals(id)).findFirst();
         }

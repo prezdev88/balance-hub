@@ -1,5 +1,6 @@
 package cl.prezdev.balancehub.infrastructure.persistence.jpa.adapter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -23,6 +24,12 @@ public class DebtJpaAdapter implements DebtRepository {
     @Override
     public void save(Debt debt) {
         repository.save(toEntity(debt));
+    }
+
+    @Override
+    public BigDecimal totalByDebtorId(String debtorId) {
+        BigDecimal total = repository.sumPendingAmountByDebtorId(debtorId);
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     @Override

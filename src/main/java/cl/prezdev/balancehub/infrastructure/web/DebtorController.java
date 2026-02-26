@@ -1,6 +1,7 @@
 package cl.prezdev.balancehub.infrastructure.web;
 
 import java.net.URI;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class DebtorController {
     }
 
     private static DebtorHttpItem toHttpItem(DebtorListItem item) {
-        return new DebtorHttpItem(item.id(), item.name(), item.email());
+        return new DebtorHttpItem(item.id(), item.name(), item.email(), item.totalDebt());
     }
 
     public record CreateDebtorRequest(
@@ -63,5 +64,5 @@ public class DebtorController {
 
     public record ListDebtorsHttpResponse(List<DebtorHttpItem> debtors) {}
 
-    public record DebtorHttpItem(String id, String name, String email) {}
+    public record DebtorHttpItem(String id, String name, String email, BigDecimal totalDebt) {}
 }

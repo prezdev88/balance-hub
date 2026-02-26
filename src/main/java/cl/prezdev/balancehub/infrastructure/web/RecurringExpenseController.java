@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeleteFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseCommand;
+import cl.prezdev.balancehub.application.usecases.recurringexpense.delete.DeleteFixedExpenseCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesCommand;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesResult;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.RecurringExpenseListItem;
@@ -35,17 +38,20 @@ public class RecurringExpenseController {
     private final CreateRecurringExpenseInputPort createUseCase;
     private final ListRecurringExpensesInputPort listUseCase;
     private final UpdateFixedExpenseInputPort updateFixedExpenseUseCase;
+    private final DeleteFixedExpenseInputPort deleteFixedExpenseUseCase;
     private final GetRecurringExpenseTotalInputPort totalUseCase;
 
     public RecurringExpenseController(
         CreateRecurringExpenseInputPort createUseCase,
         ListRecurringExpensesInputPort listUseCase,
         UpdateFixedExpenseInputPort updateFixedExpenseUseCase,
+        DeleteFixedExpenseInputPort deleteFixedExpenseUseCase,
         GetRecurringExpenseTotalInputPort totalUseCase
     ) {
         this.createUseCase = createUseCase;
         this.listUseCase = listUseCase;
         this.updateFixedExpenseUseCase = updateFixedExpenseUseCase;
+        this.deleteFixedExpenseUseCase = deleteFixedExpenseUseCase;
         this.totalUseCase = totalUseCase;
     }
 
@@ -87,6 +93,12 @@ public class RecurringExpenseController {
         return ResponseEntity.ok(
             new UpdateFixedExpenseHttpResponse(result.id(), result.description(), result.amount())
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFixedExpense(@PathVariable String id) {
+        deleteFixedExpenseUseCase.execute(new DeleteFixedExpenseCommand(id));
+        return ResponseEntity.noContent().build();
     }
 
     private static RecurringExpenseHttpItem toHttpItem(RecurringExpenseListItem item) {

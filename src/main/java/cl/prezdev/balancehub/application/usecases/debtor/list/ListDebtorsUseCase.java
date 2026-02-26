@@ -3,19 +3,25 @@ package cl.prezdev.balancehub.application.usecases.debtor.list;
 import java.util.List;
 
 import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
+import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.domain.Debtor;
 
 public class ListDebtorsUseCase implements ListDebtorsInputPort {
 
     private final DebtorRepository repository;
+    private final DebtRepository debtRepository;
 
-    public ListDebtorsUseCase(DebtorRepository repository) {
+    public ListDebtorsUseCase(DebtorRepository repository, DebtRepository debtRepository) {
         if (repository == null) {
-            throw new IllegalArgumentException("repository must not be null");  
+            throw new IllegalArgumentException("repository must not be null");
+        }
+        if (debtRepository == null) {
+            throw new IllegalArgumentException("debtRepository must not be null");
         }
 
         this.repository = repository;
+        this.debtRepository = debtRepository;
     }
 
     @Override
@@ -31,7 +37,8 @@ public class ListDebtorsUseCase implements ListDebtorsInputPort {
             .map(debtor -> new DebtorListItem(
                 debtor.getId(),
                 debtor.getName(),
-                debtor.getEmail()
+                debtor.getEmail(),
+                debtRepository.totalByDebtorId(debtor.getId())
             ))
             .toList();
     }

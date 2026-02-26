@@ -11,6 +11,7 @@ import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeleteFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetDebtsInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
@@ -28,6 +29,7 @@ import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorUseC
 import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseUseCase;
+import cl.prezdev.balancehub.application.usecases.recurringexpense.delete.DeleteFixedExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.total.GetRecurringExpenseTotalUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.update.UpdateFixedExpenseUseCase;
@@ -47,8 +49,8 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    ListDebtorsInputPort listDebtorsUseCase(DebtorRepository debtorRepository) {
-        return new ListDebtorsUseCase(debtorRepository);
+    ListDebtorsInputPort listDebtorsUseCase(DebtorRepository debtorRepository, DebtRepository debtRepository) {
+        return new ListDebtorsUseCase(debtorRepository, debtRepository);
     }
 
     @Bean
@@ -104,6 +106,16 @@ public class UseCaseConfiguration {
         UpdateFixedExpenseUseCase delegate = new UpdateFixedExpenseUseCase(recurringExpenseRepository);
         TransactionTemplate tx = new TransactionTemplate(transactionManager);
         return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    DeleteFixedExpenseInputPort deleteFixedExpenseUseCase(
+        RecurringExpenseRepository recurringExpenseRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        DeleteFixedExpenseUseCase delegate = new DeleteFixedExpenseUseCase(recurringExpenseRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> tx.executeWithoutResult(status -> delegate.execute(command));
     }
 
     @Bean

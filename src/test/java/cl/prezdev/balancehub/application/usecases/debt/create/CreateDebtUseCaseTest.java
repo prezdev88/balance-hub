@@ -81,6 +81,14 @@ class CreateDebtUseCaseTest {
         }
 
         @Override
+        public BigDecimal totalByDebtorId(String debtorId) {
+            return saved.stream()
+                .filter(d -> d.getDebtorId().equals(debtorId))
+                .map(Debt::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        @Override
         public List<Debt> findByDebtorIdAndDateRange(String debtorId, LocalDate startDate, LocalDate endDate) {
             return saved.stream()
                 .filter(d -> d.getDebtorId().equals(debtorId))

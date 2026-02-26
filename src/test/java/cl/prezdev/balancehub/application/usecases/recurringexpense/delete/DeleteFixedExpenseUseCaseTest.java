@@ -1,6 +1,6 @@
-package cl.prezdev.balancehub.application.usecases.recurringexpense.update;
+package cl.prezdev.balancehub.application.usecases.recurringexpense.delete;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
@@ -15,22 +15,21 @@ import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException
 import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
 import cl.prezdev.balancehub.domain.RecurringExpense;
 import cl.prezdev.balancehub.domain.enums.ExpenseType;
-import cl.prezdev.balancehub.domain.exception.InvalidRecurringExpenseException;
 
-class UpdateFixedExpenseUseCaseTest {
+class DeleteFixedExpenseUseCaseTest {
 
-    private UpdateFixedExpenseUseCase useCase;
+    private DeleteFixedExpenseUseCase useCase;
     private InMemoryRecurringExpenseRepository repo;
 
     @BeforeEach
     void setUp() {
         repo = new InMemoryRecurringExpenseRepository();
-        useCase = new UpdateFixedExpenseUseCase(repo);
+        useCase = new DeleteFixedExpenseUseCase(repo);
     }
 
     @Test
     void shouldThrowWhenRepositoryIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> new UpdateFixedExpenseUseCase(null));
+        assertThrows(IllegalArgumentException.class, () -> new DeleteFixedExpenseUseCase(null));
     }
 
     @Test
@@ -40,46 +39,21 @@ class UpdateFixedExpenseUseCaseTest {
 
     @Test
     void shouldThrowWhenNotFound() {
-        var cmd = new UpdateFixedExpenseCommand("no-id", "X", BigDecimal.ONE);
-        assertThrows(FixedExpenseNotFoundException.class, () -> useCase.execute(cmd));
+        assertThrows(FixedExpenseNotFoundException.class, () -> useCase.execute(new DeleteFixedExpenseCommand("no-id")));
     }
 
     @Test
-    void shouldUpdateAndReturnUpdatedValues() {
-        var existing = new RecurringExpense("r-1", "Old", BigDecimal.valueOf(100), ExpenseType.FIXED);
-        repo.saved.add(existing);
+    void shouldDeleteWhenFound() {
+        repo.saved.add(new RecurringExpense("r-1", "Gym", BigDecimal.valueOf(100), ExpenseType.OPTIONAL));
 
-        var cmd = new UpdateFixedExpenseCommand(existing.getId(), "New Desc", BigDecimal.valueOf(150));
-        var result = useCase.execute(cmd);
+        useCase.execute(new DeleteFixedExpenseCommand("r-1"));
 
-        assertEquals(existing.getId(), result.id());
-        assertEquals("New Desc", result.description());
-        assertEquals(0, result.amount().compareTo(BigDecimal.valueOf(150)));
-        assertEquals("New Desc", repo.lastUpdated.getDescription());
-    }
-
-    @Test
-    void shouldThrowWhenNewDescriptionIsBlank() {
-        var existing = new RecurringExpense("r-2", "Old2", BigDecimal.valueOf(100), ExpenseType.FIXED);
-        repo.saved.add(existing);
-
-        var cmd = new UpdateFixedExpenseCommand(existing.getId(), "", BigDecimal.valueOf(50));
-        assertThrows(InvalidRecurringExpenseException.class, () -> useCase.execute(cmd));
-    }
-
-    @Test
-    void shouldThrowWhenNewAmountIsInvalid() {
-        var existing = new RecurringExpense("r-3", "Old3", BigDecimal.valueOf(100), ExpenseType.FIXED);
-        repo.saved.add(existing);
-
-        var cmd = new UpdateFixedExpenseCommand(existing.getId(), "New", BigDecimal.valueOf(0));
-        assertThrows(InvalidRecurringExpenseException.class, () -> useCase.execute(cmd));
+        assertFalse(repo.findById("r-1").isPresent());
     }
 
     static class InMemoryRecurringExpenseRepository implements RecurringExpenseRepository {
 
         List<RecurringExpense> saved = new ArrayList<>();
-        RecurringExpense lastUpdated;
 
         @Override
         public void save(RecurringExpense recurringExpense) {
@@ -88,7 +62,6 @@ class UpdateFixedExpenseUseCaseTest {
 
         @Override
         public void update(RecurringExpense recurringExpense) {
-            this.lastUpdated = recurringExpense;
         }
 
         @Override
