@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/prezdev88/balance-hub/compare/v1.1.0...v1.2.0) (2026-02-27)
+
+
+### Features
+
+* add backup and restore scripts for database management ([e5c24ba](https://github.com/prezdev88/balance-hub/commit/e5c24ba40ec11c5ade4c492dd7210efaa74b170a))
+* add controllers and configuration for all uses cases ([821c405](https://github.com/prezdev88/balance-hub/commit/821c4056d55e7ea3adc77a329a4aa31d420016f9))
+* Add controllers for reports, salary snapshots, and savings goals ([97a9f20](https://github.com/prezdev88/balance-hub/commit/97a9f2046752215501bc61ad3e9b4b7cbf106708))
+* add flyway to project ([c43f185](https://github.com/prezdev88/balance-hub/commit/c43f1853e3fdcbe660158bfef8e19f7147568cf6))
+* add improvements documentation with feature requests and questions ([93226a7](https://github.com/prezdev88/balance-hub/commit/93226a739d02c9fa06cb333a7acdb240c594920a))
+* add OpenAPI specification for Balance Hub API ([a0e9f5f](https://github.com/prezdev88/balance-hub/commit/a0e9f5fb68e4b89402311ec82011b6bd4f9616ca))
+* add springdoc-openapi dependency and configure application properties for OpenAPI UI ([a21029e](https://github.com/prezdev88/balance-hub/commit/a21029e46837f2ee782954107338d128a4a90627))
+* enhance use cases with transaction management and update controller responses ([eebf169](https://github.com/prezdev88/balance-hub/commit/eebf169a8b67f4518a88197dc0637df61b09bc81))
+* implement delete functionality for fixed expenses and enhance debt tracking ([c6231f8](https://github.com/prezdev88/balance-hub/commit/c6231f8a5e3393897f4a823ccd406dcaaeb7b2ce))
+* implement input ports for use cases and update controllers to use them ([7dd89e9](https://github.com/prezdev88/balance-hub/commit/7dd89e903f2484d408e7f7723216394a52ca7d6a))
+* remove deprecated OpenAPI YAML file and standardize documentation source ([c825133](https://github.com/prezdev88/balance-hub/commit/c825133a44fefc0109d00694d61ca5d6e215bcfb))
+* remove unused import statements from RecurringExpenseController and SalaryController ([dfe8dc5](https://github.com/prezdev88/balance-hub/commit/dfe8dc56ea1d7bb0c3fb1b97516a8c9d913ef58b))
+
 ## 1.1.0 (2026-02-23)
 
 
