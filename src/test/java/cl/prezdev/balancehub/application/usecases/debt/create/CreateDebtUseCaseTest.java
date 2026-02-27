@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,16 @@ class CreateDebtUseCaseTest {
         @Override
         public void save(Debt debt) {
             saved.add(debt);
+        }
+
+        @Override
+        public Optional<Debt> findById(String debtId) {
+            return saved.stream().filter(d -> d.getId().equals(debtId)).findFirst();
+        }
+
+        @Override
+        public void deleteById(String debtId) {
+            saved.removeIf(d -> d.getId().equals(debtId));
         }
 
         @Override

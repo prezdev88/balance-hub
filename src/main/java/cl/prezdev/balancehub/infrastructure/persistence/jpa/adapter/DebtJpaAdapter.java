@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +25,16 @@ public class DebtJpaAdapter implements DebtRepository {
     @Override
     public void save(Debt debt) {
         repository.save(toEntity(debt));
+    }
+
+    @Override
+    public Optional<Debt> findById(String debtId) {
+        return repository.findById(debtId).map(this::toDomain);
+    }
+
+    @Override
+    public void deleteById(String debtId) {
+        repository.deleteById(debtId);
     }
 
     @Override

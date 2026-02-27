@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +86,16 @@ class ListDebtorsUseCaseTest {
         }
 
         @Override
+        public Optional<cl.prezdev.balancehub.domain.Debt> findById(String debtId) {
+            return Optional.empty();
+        }
+
+        @Override
+        public void deleteById(String debtId) {
+            // not needed in this test
+        }
+
+        @Override
         public BigDecimal totalByDebtorId(String debtorId) {
             if (readIndex < totalsByDebtorId.size()) {
                 return totalsByDebtorId.get(readIndex++);
@@ -95,8 +106,8 @@ class ListDebtorsUseCaseTest {
         @Override
         public List<cl.prezdev.balancehub.domain.Debt> findByDebtorIdAndDateRange(
             String debtorId,
-            java.time.LocalDate startDate,
-            java.time.LocalDate endDate
+            LocalDate startDate,
+            LocalDate endDate
         ) {
             throw new UnsupportedOperationException();
         }

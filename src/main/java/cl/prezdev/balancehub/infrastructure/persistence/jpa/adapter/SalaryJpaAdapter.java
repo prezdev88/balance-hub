@@ -1,5 +1,7 @@
 package cl.prezdev.balancehub.infrastructure.persistence.jpa.adapter;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import cl.prezdev.balancehub.application.ports.out.SalaryRepository;
@@ -29,5 +31,15 @@ public class SalaryJpaAdapter implements SalaryRepository {
     @Override
     public void deactivateCurrentSalary() {
         repository.deactivateCurrentSalary();
+    }
+
+    @Override
+    public Optional<Salary> findActive() {
+        return repository.findFirstByActiveTrue().map(entity -> new Salary(
+            entity.getId(),
+            entity.getAmount(),
+            entity.getCreatedAt(),
+            entity.isActive()
+        ));
     }
 }

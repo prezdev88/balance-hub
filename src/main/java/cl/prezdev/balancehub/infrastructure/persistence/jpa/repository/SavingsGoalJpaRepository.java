@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import cl.prezdev.balancehub.infrastructure.persistence.jpa.entity.SalaryJpaEntity;
+import cl.prezdev.balancehub.infrastructure.persistence.jpa.entity.SavingsGoalJpaEntity;
 
-public interface SalaryJpaRepository extends JpaRepository<SalaryJpaEntity, String> {
+public interface SavingsGoalJpaRepository extends JpaRepository<SavingsGoalJpaEntity, String> {
 
     @Modifying
     @Transactional
-    @Query("update SalaryJpaEntity s set s.active = false where s.active = true")
-    void deactivateCurrentSalary();
+    @Query("update SavingsGoalJpaEntity s set s.active = false where s.active = true")
+    void deactivateCurrentSavingsGoal();
 
-    Optional<SalaryJpaEntity> findFirstByActiveTrue();
+    Optional<SavingsGoalJpaEntity> findFirstByActiveTrue();
 }

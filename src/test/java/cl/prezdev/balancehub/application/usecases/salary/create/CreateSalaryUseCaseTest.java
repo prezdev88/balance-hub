@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,11 @@ class CreateSalaryUseCaseTest {
         @Override
         public void deactivateCurrentSalary() {
             deactivateCount++;
+        }
+
+        @Override
+        public Optional<Salary> findActive() {
+            return saved.stream().filter(Salary::isActive).findFirst();
         }
     }
 }

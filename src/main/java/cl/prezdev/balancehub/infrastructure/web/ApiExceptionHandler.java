@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import cl.prezdev.balancehub.application.exception.DebtorNotFoundException;
+import cl.prezdev.balancehub.application.exception.DebtNotFoundException;
+import cl.prezdev.balancehub.application.exception.MonthlySalarySnapshotNotFoundException;
 import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException;
 import cl.prezdev.balancehub.application.exception.InstallmentNotFoundException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtorException;
 import cl.prezdev.balancehub.domain.exception.InvalidInstallmentException;
 import cl.prezdev.balancehub.domain.exception.InvalidRecurringExpenseException;
+import cl.prezdev.balancehub.domain.exception.InvalidSavingsGoalException;
 import cl.prezdev.balancehub.domain.exception.InvalidSalaryException;
 
 @RestControllerAdvice
@@ -25,6 +28,7 @@ public class ApiExceptionHandler {
         InvalidDebtException.class,
         InvalidInstallmentException.class,
         InvalidRecurringExpenseException.class,
+        InvalidSavingsGoalException.class,
         InvalidSalaryException.class
     })
     public ResponseEntity<ApiErrorResponse> handleBadRequest(RuntimeException ex) {
@@ -39,6 +43,8 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler({
         DebtorNotFoundException.class,
+        DebtNotFoundException.class,
+        MonthlySalarySnapshotNotFoundException.class,
         InstallmentNotFoundException.class,
         FixedExpenseNotFoundException.class
     })

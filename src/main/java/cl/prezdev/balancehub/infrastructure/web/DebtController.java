@@ -1,40 +1,48 @@
 package cl.prezdev.balancehub.infrastructure.web;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
-import cl.prezdev.balancehub.application.ports.in.GetDebtsInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeleteDebtInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetDebtDetailInputPort;
 import cl.prezdev.balancehub.application.usecases.debt.create.CreateDebtResult;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.CreateDebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.DebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.InstallmentCommand;
+import cl.prezdev.balancehub.application.usecases.debt.delete.DeleteDebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.get.DebtItem;
-import cl.prezdev.balancehub.application.usecases.debt.get.GetDebtsCommand;
-import cl.prezdev.balancehub.application.usecases.debt.get.GetDebtsResult;
 import cl.prezdev.balancehub.application.usecases.debt.get.InstallmentItem;
+import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailCommand;
+import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailResult;
 
 @RestController
 @RequestMapping("/api/debts")
 public class DebtController {
 
     private final CreateDebtInputPort createDebtUseCase;
-    private final GetDebtsInputPort getDebtsUseCase;
+    private final DeleteDebtInputPort deleteDebtUseCase;
+    private final GetDebtDetailInputPort getDebtDetailUseCase;
 
-    public DebtController(CreateDebtInputPort createDebtUseCase, GetDebtsInputPort getDebtsUseCase) {
+    public DebtController(
+        CreateDebtInputPort createDebtUseCase,
+        DeleteDebtInputPort deleteDebtUseCase,
+        GetDebtDetailInputPort getDebtDetailUseCase
+    ) {
         this.createDebtUseCase = createDebtUseCase;
-        this.getDebtsUseCase = getDebtsUseCase;
+        this.deleteDebtUseCase = deleteDebtUseCase;
+        this.getDebtDetailUseCase = getDebtDetailUseCase;
     }
 
     @PostMapping
@@ -59,22 +67,24 @@ public class DebtController {
             .body(new CreateDebtHttpResponse(result.debtId()));
     }
 
-    @GetMapping
-    public ResponseEntity<GetDebtsHttpResponse> getByDebtorAndRange(
-        @RequestParam String debtorId,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-    ) {
-        GetDebtsResult result = getDebtsUseCase.execute(new GetDebtsCommand(debtorId, startDate, endDate));
+    @GetMapping("/{debtId}")
+    public ResponseEntity<GetDebtDetailHttpResponse> getDebtDetail(@PathVariable String debtId) {
+        GetDebtDetailResult result = getDebtDetailUseCase.execute(new GetDebtDetailCommand(debtId));
         return ResponseEntity.ok(toHttpResponse(result));
     }
 
-    private static GetDebtsHttpResponse toHttpResponse(GetDebtsResult result) {
-        return new GetDebtsHttpResponse(
+    @DeleteMapping("/{debtId}")
+    public ResponseEntity<Void> delete(@PathVariable String debtId) {
+        deleteDebtUseCase.execute(new DeleteDebtCommand(debtId));
+        return ResponseEntity.noContent().build();
+    }
+
+    private static GetDebtDetailHttpResponse toHttpResponse(GetDebtDetailResult result) {
+        return new GetDebtDetailHttpResponse(
             result.id(),
             result.name(),
             result.email(),
-            result.debts().stream().map(DebtController::toHttpDebtItem).toList()
+            toHttpDebtItem(result.debt())
         );
     }
 
@@ -105,11 +115,11 @@ public class DebtController {
 
     public record CreateDebtHttpResponse(String debtId) {}
 
-    public record GetDebtsHttpResponse(
+    public record GetDebtDetailHttpResponse(
         String id,
         String name,
         String email,
-        List<DebtHttpItem> debts
+        DebtHttpItem debt
     ) {}
 
     public record DebtHttpItem(
