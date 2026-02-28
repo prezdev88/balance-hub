@@ -11,5 +11,6 @@ public record AuthLoginResult(
     String userId,
     String email,
     UserRole role,
-    String debtorId
+    String debtorId,
+    boolean mustChangePassword
 ) {}

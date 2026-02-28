@@ -34,6 +34,9 @@ public class AuthUserJpaEntity {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -50,6 +53,7 @@ public class AuthUserJpaEntity {
         UserRole role,
         String debtorId,
         boolean enabled,
+        boolean mustChangePassword,
         Instant createdAt,
         Instant updatedAt
     ) {
@@ -59,6 +63,7 @@ public class AuthUserJpaEntity {
         this.role = role;
         this.debtorId = debtorId;
         this.enabled = enabled;
+        this.mustChangePassword = mustChangePassword;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -105,6 +110,14 @@ public class AuthUserJpaEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
+    }
+
+    public void setMustChangePassword(boolean mustChangePassword) {
+        this.mustChangePassword = mustChangePassword;
     }
 
     public Instant getCreatedAt() {

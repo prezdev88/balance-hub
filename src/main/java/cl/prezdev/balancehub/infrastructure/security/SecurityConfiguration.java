@@ -16,9 +16,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final MustChangePasswordFilter mustChangePasswordFilter;
 
-    public SecurityConfiguration(TokenAuthenticationFilter tokenAuthenticationFilter) {
+    public SecurityConfiguration(
+        TokenAuthenticationFilter tokenAuthenticationFilter,
+        MustChangePasswordFilter mustChangePasswordFilter
+    ) {
         this.tokenAuthenticationFilter = tokenAuthenticationFilter;
+        this.mustChangePasswordFilter = mustChangePasswordFilter;
     }
 
     @Bean
@@ -38,6 +43,7 @@ public class SecurityConfiguration {
                 .accessDeniedHandler((request, response, accessDeniedException) -> response.sendError(HttpStatus.FORBIDDEN.value()))
             )
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(mustChangePasswordFilter, TokenAuthenticationFilter.class)
             .build();
     }
 }

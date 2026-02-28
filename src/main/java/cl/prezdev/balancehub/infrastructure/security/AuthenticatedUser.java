@@ -6,7 +6,8 @@ public record AuthenticatedUser(
     String userId,
     String email,
     UserRole role,
-    String debtorId
+    String debtorId,
+    boolean mustChangePassword
 ) {
     public boolean isAdmin() {
         return role == UserRole.ADMIN;

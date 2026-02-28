@@ -65,7 +65,8 @@ public class AuthService {
             user.getId(),
             user.getEmail(),
             user.getRole(),
-            user.getDebtorId()
+            user.getDebtorId(),
+            user.isMustChangePassword()
         );
     }
 
@@ -87,8 +88,39 @@ public class AuthService {
         return sessionRepository.findActiveByToken(token, now).map(session -> {
             session.setLastUsedAt(now);
             AuthUserJpaEntity user = session.getUser();
-            return new AuthenticatedUser(user.getId(), user.getEmail(), user.getRole(), user.getDebtorId());
+            return new AuthenticatedUser(
+                user.getId(),
+                user.getEmail(),
+                user.getRole(),
+                user.getDebtorId(),
+                user.isMustChangePassword()
+            );
         });
+    }
+
+    @Transactional
+    public void changePassword(String userId, String newPassword) {
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("User is required");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("New password is required");
+        }
+        if (newPassword.trim().length() < 6) {
+            throw new IllegalArgumentException("New password must have at least 6 characters");
+        }
+
+        AuthUserJpaEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!user.isEnabled()) {
+            throw new IllegalArgumentException("User access is disabled");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword.trim()));
+        user.setMustChangePassword(false);
+        user.setUpdatedAt(Instant.now());
+        userRepository.save(user);
     }
 
     private String normalizeEmail(String email) {

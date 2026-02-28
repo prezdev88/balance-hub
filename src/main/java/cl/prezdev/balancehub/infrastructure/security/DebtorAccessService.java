@@ -59,6 +59,7 @@ public class DebtorAccessService {
                 UserRole.DEBTOR,
                 debtorId,
                 true,
+                true,
                 now,
                 now
             )
@@ -68,6 +69,7 @@ public class DebtorAccessService {
         user.setRole(UserRole.DEBTOR);
         user.setDebtorId(debtorId);
         user.setEnabled(true);
+        user.setMustChangePassword(true);
         user.setPasswordHash(encodedPassword);
         user.setUpdatedAt(now);
 
@@ -85,6 +87,7 @@ public class DebtorAccessService {
         PasswordData passwordData = resolvePassword(requestedPassword);
         user.setPasswordHash(passwordEncoder.encode(passwordData.password()));
         user.setEnabled(true);
+        user.setMustChangePassword(true);
         user.setUpdatedAt(Instant.now());
         userRepository.save(user);
         sessionRepository.revokeAllByUserId(user.getId());

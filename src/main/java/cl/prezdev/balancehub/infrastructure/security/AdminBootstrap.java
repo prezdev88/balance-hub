@@ -60,6 +60,7 @@ public class AdminBootstrap implements ApplicationRunner {
             UserRole.ADMIN,
             null,
             true,
+            false,
             now,
             now
         ));
