@@ -5,6 +5,7 @@ import java.net.URI;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import cl.prezdev.balancehub.application.usecases.savingsgoal.create.CreateSavin
 
 @RestController
 @RequestMapping("/api/savings-goals")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class SavingsGoalController {
 
     private final CreateSavingsGoalInputPort createSavingsGoalUseCase;

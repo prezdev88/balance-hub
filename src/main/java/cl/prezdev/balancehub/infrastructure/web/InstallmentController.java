@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,12 +38,14 @@ public class InstallmentController {
     }
 
     @PatchMapping("/{installmentId}/pay")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> pay(@PathVariable String installmentId, @RequestBody PayInstallmentRequest request) {
         payInstallmentUseCase.execute(new PayInstallmentCommand(installmentId, request.paymentDate()));
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/unpaid")
+    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('DEBTOR') and #debtorId == authentication.principal.debtorId)")
     public ResponseEntity<GetUnpaidInstallmentsByMonthHttpResponse> getUnpaidByMonth(
         @RequestParam String debtorId,
         @RequestParam int year,

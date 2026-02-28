@@ -6,5 +6,6 @@ public record DebtorListItem (
     String id,
     String name,
     String email,
-    BigDecimal totalDebt
+    BigDecimal totalDebt,
+    boolean accessEnabled
 ) {}

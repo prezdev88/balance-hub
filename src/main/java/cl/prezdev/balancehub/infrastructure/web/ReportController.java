@@ -4,6 +4,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ public class ReportController {
     }
 
     @GetMapping(value = "/monthly-summary.pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('DEBTOR') and #debtorId == authentication.principal.debtorId)")
     public ResponseEntity<byte[]> monthlySummaryPdf(
         @RequestParam String debtorId,
         @RequestParam int year,

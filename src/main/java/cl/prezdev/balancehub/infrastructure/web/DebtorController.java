@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsResult;
 
 @RestController
 @RequestMapping("/api/debtors")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class DebtorController {
 
     private final CreateDebtorInputPort createDebtorUseCase;
@@ -52,7 +54,7 @@ public class DebtorController {
     }
 
     private static DebtorHttpItem toHttpItem(DebtorListItem item) {
-        return new DebtorHttpItem(item.id(), item.name(), item.email(), item.totalDebt());
+        return new DebtorHttpItem(item.id(), item.name(), item.email(), item.totalDebt(), item.accessEnabled());
     }
 
     public record CreateDebtorRequest(
@@ -64,5 +66,5 @@ public class DebtorController {
 
     public record ListDebtorsHttpResponse(List<DebtorHttpItem> debtors) {}
 
-    public record DebtorHttpItem(String id, String name, String email, BigDecimal totalDebt) {}
+    public record DebtorHttpItem(String id, String name, String email, BigDecimal totalDebt, boolean accessEnabled) {}
 }

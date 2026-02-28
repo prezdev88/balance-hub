@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import cl.prezdev.balancehub.application.usecases.debt.get.DebtItem;
 import cl.prezdev.balancehub.application.usecases.debt.get.InstallmentItem;
 import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailCommand;
 import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailResult;
+import cl.prezdev.balancehub.infrastructure.security.SecurityAccess;
 
 @RestController
 @RequestMapping("/api/debts")
@@ -46,6 +49,7 @@ public class DebtController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CreateDebtHttpResponse> create(@RequestBody CreateDebtRequest request) {
         CreateDebtResult result = createDebtUseCase.execute(
             new CreateDebtCommand(
@@ -68,12 +72,15 @@ public class DebtController {
     }
 
     @GetMapping("/{debtId}")
-    public ResponseEntity<GetDebtDetailHttpResponse> getDebtDetail(@PathVariable String debtId) {
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DEBTOR')")
+    public ResponseEntity<GetDebtDetailHttpResponse> getDebtDetail(@PathVariable String debtId, Authentication authentication) {
         GetDebtDetailResult result = getDebtDetailUseCase.execute(new GetDebtDetailCommand(debtId));
+        SecurityAccess.requireAdminOrDebtorOwner(authentication, result.id());
         return ResponseEntity.ok(toHttpResponse(result));
     }
 
     @DeleteMapping("/{debtId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String debtId) {
         deleteDebtUseCase.execute(new DeleteDebtCommand(debtId));
         return ResponseEntity.noContent().build();

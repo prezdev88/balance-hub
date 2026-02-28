@@ -5,6 +5,7 @@ import java.time.Year;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import cl.prezdev.balancehub.application.usecases.financialplan.MonthlyFreeAmoun
 
 @RestController
 @RequestMapping("/api/financial-plan")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class FinancialPlanController {
 
     private final GetMonthlyFreeAmountInputPort getMonthlyFreeAmountUseCase;

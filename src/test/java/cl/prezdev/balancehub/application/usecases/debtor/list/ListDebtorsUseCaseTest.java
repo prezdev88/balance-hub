@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import cl.prezdev.balancehub.application.ports.out.DebtorAccessRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.domain.Debtor;
@@ -21,22 +22,29 @@ class ListDebtorsUseCaseTest {
     private ListDebtorsUseCase useCase;
     private InMemoryDebtorRepository repo;
     private InMemoryDebtRepository debtRepo;
+    private InMemoryDebtorAccessRepository debtorAccessRepo;
 
     @BeforeEach
     void setUp() {
         repo = new InMemoryDebtorRepository();
         debtRepo = new InMemoryDebtRepository();
-        useCase = new ListDebtorsUseCase(repo, debtRepo);
+        debtorAccessRepo = new InMemoryDebtorAccessRepository();
+        useCase = new ListDebtorsUseCase(repo, debtRepo, debtorAccessRepo);
     }
 
     @Test
     void shouldThrowWhenRepositoryIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> new ListDebtorsUseCase(null, debtRepo));
+        assertThrows(IllegalArgumentException.class, () -> new ListDebtorsUseCase(null, debtRepo, debtorAccessRepo));
     }
 
     @Test
     void shouldThrowWhenDebtRepositoryIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> new ListDebtorsUseCase(repo, null));
+        assertThrows(IllegalArgumentException.class, () -> new ListDebtorsUseCase(repo, null, debtorAccessRepo));
+    }
+
+    @Test
+    void shouldThrowWhenDebtorAccessRepositoryIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new ListDebtorsUseCase(repo, debtRepo, null));
     }
 
     @Test
@@ -45,6 +53,8 @@ class ListDebtorsUseCaseTest {
         repo.saved.add(new Debtor("Bob", "bob@example.com"));
         debtRepo.totalsByDebtorId.add(BigDecimal.valueOf(1200));
         debtRepo.totalsByDebtorId.add(BigDecimal.valueOf(500));
+        debtorAccessRepo.canLoginByDebtorIndex.add(true);
+        debtorAccessRepo.canLoginByDebtorIndex.add(false);
 
         var result = useCase.execute();
 
@@ -52,6 +62,8 @@ class ListDebtorsUseCaseTest {
         assertEquals("Alice", result.debtors().get(0).name());
         assertEquals("bob@example.com", result.debtors().get(1).email());
         assertEquals(0, result.debtors().get(0).totalDebt().compareTo(BigDecimal.valueOf(1200)));
+        assertEquals(true, result.debtors().get(0).accessEnabled());
+        assertEquals(false, result.debtors().get(1).accessEnabled());
     }
 
     static class InMemoryDebtorRepository implements DebtorRepository {
@@ -110,6 +122,19 @@ class ListDebtorsUseCaseTest {
             LocalDate endDate
         ) {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    static class InMemoryDebtorAccessRepository implements DebtorAccessRepository {
+        List<Boolean> canLoginByDebtorIndex = new ArrayList<>();
+        int readIndex;
+
+        @Override
+        public boolean canLogin(String debtorId) {
+            if (readIndex < canLoginByDebtorIndex.size()) {
+                return canLoginByDebtorIndex.get(readIndex++);
+            }
+            return false;
         }
     }
 }

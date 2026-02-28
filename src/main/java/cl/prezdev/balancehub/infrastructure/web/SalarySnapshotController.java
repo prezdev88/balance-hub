@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,7 @@ public class SalarySnapshotController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('DEBTOR') and #debtorId == authentication.principal.debtorId)")
     public ResponseEntity<SalarySnapshotHttpResponse> getByPeriod(
         @RequestParam String debtorId,
         @RequestParam int year,
@@ -45,6 +47,7 @@ public class SalarySnapshotController {
     }
 
     @PostMapping("/pay")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<PayMonthlySalaryHttpResponse> pay(@RequestBody PayMonthlySalaryRequest request) {
         PayMonthlySalaryResult result = payMonthlySalaryUseCase.execute(
             new PayMonthlySalaryCommand(request.debtorId(), request.year(), request.month(), request.paymentDate())

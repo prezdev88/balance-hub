@@ -26,6 +26,7 @@ import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
+import cl.prezdev.balancehub.application.ports.out.DebtorAccessRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
 import cl.prezdev.balancehub.application.ports.out.MonthlySalarySnapshotRepository;
@@ -65,8 +66,12 @@ public class UseCaseConfiguration {
     }
 
     @Bean
-    ListDebtorsInputPort listDebtorsUseCase(DebtorRepository debtorRepository, DebtRepository debtRepository) {
-        return new ListDebtorsUseCase(debtorRepository, debtRepository);
+    ListDebtorsInputPort listDebtorsUseCase(
+        DebtorRepository debtorRepository,
+        DebtRepository debtRepository,
+        DebtorAccessRepository debtorAccessRepository
+    ) {
+        return new ListDebtorsUseCase(debtorRepository, debtRepository, debtorAccessRepository);
     }
 
     @Bean
