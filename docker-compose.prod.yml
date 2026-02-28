@@ -1,0 +1,25 @@
+services:
+  balance-hub-backend:
+    container_name: balance-hub-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: balance-hub-backend:prod
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgresql-shared:5432/balance_hub_db
+      DB_USERNAME: balance_hub
+      DB_PASSWORD: balance_hub
+    networks:
+      - balance-hub-net
+      - postgresql-shared-net
+    ports:
+      - "8080:8080"
+
+networks:
+  balance-hub-net:
+    name: balance-hub-net
+  postgresql-shared-net:
+    external: true
+    name: postgresql-shared-net
