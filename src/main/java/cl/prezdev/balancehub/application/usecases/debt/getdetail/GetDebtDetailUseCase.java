@@ -50,12 +50,14 @@ public class GetDebtDetailUseCase implements GetDebtDetailInputPort {
             ))
             .toList();
 
+        boolean settled = !installments.isEmpty() && installments.stream().allMatch(item -> item.paidAt() != null);
+
         var debtItem = new DebtItem(
             debt.getId(),
             debt.getDescription(),
             debt.getTotalAmount(),
             debt.getCreatedAt(),
-            debt.isSettled(),
+            settled,
             installments
         );
 
