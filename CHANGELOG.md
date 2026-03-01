@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/prezdev88/balance-hub/compare/v1.2.0...v1.3.0) (2026-03-01)
+
+
+### Features
+
+* add Dockerfile and Docker Compose for production setup; update application properties for environment configuration ([cb67218](https://github.com/prezdev88/balance-hub/commit/cb672188e82f82ab510565726ed2921c6391f539))
+* add must_change_password functionality and related database migration ([675868a](https://github.com/prezdev88/balance-hub/commit/675868a06100ac30cb9b1a12856723291b826c20))
+* add preview endpoint for salary snapshot with unpaid installments and free amount calculation ([c82f478](https://github.com/prezdev88/balance-hub/commit/c82f478979e6f9b6ab156e3b284d977eeafc354d))
+* add start_prod.sh script for production environment setup ([a1b37da](https://github.com/prezdev88/balance-hub/commit/a1b37da66ec0cd038ff2f5abf688f1c563c759ab))
+* Implement authentication and authorization features ([eecd17b](https://github.com/prezdev88/balance-hub/commit/eecd17b230d40ab7fa1b787c712c5e7ee57c468b))
+* refactor monthly summary report endpoint to return structured response ([4351e5f](https://github.com/prezdev88/balance-hub/commit/4351e5f372444ba6da39e6a68b162a49589eab6d))
+* update debt settlement status calculation in GetDebtDetailUseCase ([4299728](https://github.com/prezdev88/balance-hub/commit/429972874f0bdb142346a88cac703c3ca116bd57))
+
+
+### Bug Fixes
+
+* update base image in Dockerfile for build stage ([bceb8a7](https://github.com/prezdev88/balance-hub/commit/bceb8a7cc0b813d4fffeec0b62472ef10cea89f9))
+
 ## [1.2.0](https://github.com/prezdev88/balance-hub/compare/v1.1.0...v1.2.0) (2026-02-27)
 
 
