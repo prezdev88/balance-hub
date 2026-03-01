@@ -1,6 +1,7 @@
 package cl.prezdev.balancehub.infrastructure.web;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySalarySnapshotInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetMonthlyFreeAmountInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetUnpaidInstallmentsByMonthInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
+import cl.prezdev.balancehub.application.usecases.financialplan.GetMonthlyFreeAmountCommand;
+import cl.prezdev.balancehub.application.usecases.installment.unpaid.GetUnpaidInstallmentsByMonthCommand;
 import cl.prezdev.balancehub.application.usecases.salarysnapshot.SalarySnapshotItem;
 import cl.prezdev.balancehub.application.usecases.salarysnapshot.get.GetMonthlySalarySnapshotCommand;
 import cl.prezdev.balancehub.application.usecases.salarysnapshot.pay.PayMonthlySalaryCommand;
 import cl.prezdev.balancehub.application.usecases.salarysnapshot.pay.PayMonthlySalaryResult;
+import cl.prezdev.balancehub.application.exception.MonthlySalarySnapshotNotFoundException;
 import cl.prezdev.balancehub.domain.enums.SalarySnapshotStatus;
 
 @RestController
@@ -26,24 +32,19 @@ public class SalarySnapshotController {
 
     private final GetMonthlySalarySnapshotInputPort getMonthlySalarySnapshotUseCase;
     private final PayMonthlySalaryInputPort payMonthlySalaryUseCase;
+    private final GetUnpaidInstallmentsByMonthInputPort getUnpaidInstallmentsByMonthUseCase;
+    private final GetMonthlyFreeAmountInputPort getMonthlyFreeAmountUseCase;
 
     public SalarySnapshotController(
         GetMonthlySalarySnapshotInputPort getMonthlySalarySnapshotUseCase,
-        PayMonthlySalaryInputPort payMonthlySalaryUseCase
+        PayMonthlySalaryInputPort payMonthlySalaryUseCase,
+        GetUnpaidInstallmentsByMonthInputPort getUnpaidInstallmentsByMonthUseCase,
+        GetMonthlyFreeAmountInputPort getMonthlyFreeAmountUseCase
     ) {
         this.getMonthlySalarySnapshotUseCase = getMonthlySalarySnapshotUseCase;
         this.payMonthlySalaryUseCase = payMonthlySalaryUseCase;
-    }
-
-    @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('DEBTOR') and #debtorId == authentication.principal.debtorId)")
-    public ResponseEntity<SalarySnapshotHttpResponse> getByPeriod(
-        @RequestParam String debtorId,
-        @RequestParam int year,
-        @RequestParam int month
-    ) {
-        var result = getMonthlySalarySnapshotUseCase.execute(new GetMonthlySalarySnapshotCommand(debtorId, year, month));
-        return ResponseEntity.ok(toHttpResponse(result.snapshot()));
+        this.getUnpaidInstallmentsByMonthUseCase = getUnpaidInstallmentsByMonthUseCase;
+        this.getMonthlyFreeAmountUseCase = getMonthlyFreeAmountUseCase;
     }
 
     @PostMapping("/pay")
@@ -53,6 +54,38 @@ public class SalarySnapshotController {
             new PayMonthlySalaryCommand(request.debtorId(), request.year(), request.month(), request.paymentDate())
         );
         return ResponseEntity.ok(new PayMonthlySalaryHttpResponse(result.created(), toHttpResponse(result.snapshot())));
+    }
+
+    @GetMapping("/preview")
+    @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('DEBTOR') and #debtorId == authentication.principal.debtorId)")
+    public ResponseEntity<SalaryPreviewHttpResponse> getPreview(
+        @RequestParam String debtorId,
+        @RequestParam int year,
+        @RequestParam int month
+    ) {
+        var unpaidResult = getUnpaidInstallmentsByMonthUseCase.execute(
+            new GetUnpaidInstallmentsByMonthCommand(debtorId, year, month)
+        );
+        var freeAmountResult = getMonthlyFreeAmountUseCase.execute(new GetMonthlyFreeAmountCommand(year));
+        BigDecimal halfFreeAmount = freeAmountResult.monthlyFreeAmount().divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
+        BigDecimal salaryPreviewAmount = halfFreeAmount.subtract(unpaidResult.totalAmount());
+
+        SalarySnapshotHttpResponse snapshot = null;
+        try {
+            var snapshotResult = getMonthlySalarySnapshotUseCase.execute(new GetMonthlySalarySnapshotCommand(debtorId, year, month));
+            snapshot = toHttpResponse(snapshotResult.snapshot());
+        } catch (MonthlySalarySnapshotNotFoundException ignored) {
+            snapshot = null;
+        }
+
+        return ResponseEntity.ok(new SalaryPreviewHttpResponse(
+            debtorId,
+            year,
+            month,
+            unpaidResult.totalAmount(),
+            salaryPreviewAmount,
+            snapshot
+        ));
     }
 
     private static SalarySnapshotHttpResponse toHttpResponse(SalarySnapshotItem item) {
@@ -87,5 +120,14 @@ public class SalarySnapshotController {
         SalarySnapshotStatus status,
         Instant createdAt,
         Instant paidAt
+    ) {}
+
+    public record SalaryPreviewHttpResponse(
+        String debtorId,
+        int year,
+        int month,
+        BigDecimal totalUnpaidInstallments,
+        BigDecimal salaryPreviewAmount,
+        SalarySnapshotHttpResponse snapshot
     ) {}
 }
