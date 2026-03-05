@@ -9,12 +9,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
+import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSavingsGoalInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeleteDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeleteFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetDebtDetailInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetHouseholdBudgetSummaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySalarySnapshotInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlyFreeAmountInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySummaryReportInputPort;
@@ -24,10 +26,13 @@ import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorAccessRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
+import cl.prezdev.balancehub.application.ports.out.HouseholdBudgetRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
 import cl.prezdev.balancehub.application.ports.out.MonthlySalarySnapshotRepository;
 import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
@@ -39,6 +44,10 @@ import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailUs
 import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorUseCase;
 import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsUseCase;
 import cl.prezdev.balancehub.application.usecases.financialplan.GetMonthlyFreeAmountUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbudget.configure.ConfigureHouseholdBudgetUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbudget.expense.RegisterHouseholdExpenseUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbudget.reset.ResetHouseholdBudgetUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbudget.summary.GetHouseholdBudgetSummaryUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.unpaid.GetUnpaidInstallmentsByMonthUseCase;
 import cl.prezdev.balancehub.application.usecases.report.monthly.GetMonthlySummaryReportUseCase;
@@ -161,6 +170,43 @@ public class UseCaseConfiguration {
     @Bean
     GetRecurringExpenseTotalInputPort getRecurringExpenseTotalUseCase(RecurringExpenseRepository recurringExpenseRepository) {
         return new GetRecurringExpenseTotalUseCase(recurringExpenseRepository);
+    }
+
+    @Bean
+    ConfigureHouseholdBudgetInputPort configureHouseholdBudgetUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        ConfigureHouseholdBudgetUseCase delegate = new ConfigureHouseholdBudgetUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    RegisterHouseholdExpenseInputPort registerHouseholdExpenseUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        RegisterHouseholdExpenseUseCase delegate = new RegisterHouseholdExpenseUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    ResetHouseholdBudgetInputPort resetHouseholdBudgetUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        ResetHouseholdBudgetUseCase delegate = new ResetHouseholdBudgetUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    GetHouseholdBudgetSummaryInputPort getHouseholdBudgetSummaryUseCase(
+        HouseholdBudgetRepository householdBudgetRepository
+    ) {
+        return new GetHouseholdBudgetSummaryUseCase(householdBudgetRepository);
     }
 
     @Bean

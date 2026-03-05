@@ -15,6 +15,7 @@ import cl.prezdev.balancehub.application.exception.InstallmentNotFoundException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtorException;
 import cl.prezdev.balancehub.domain.exception.InvalidInstallmentException;
+import cl.prezdev.balancehub.domain.exception.InvalidHouseholdBudgetException;
 import cl.prezdev.balancehub.domain.exception.InvalidRecurringExpenseException;
 import cl.prezdev.balancehub.domain.exception.InvalidSavingsGoalException;
 import cl.prezdev.balancehub.domain.exception.InvalidSalaryException;
@@ -27,6 +28,7 @@ public class ApiExceptionHandler {
         InvalidDebtorException.class,
         InvalidDebtException.class,
         InvalidInstallmentException.class,
+        InvalidHouseholdBudgetException.class,
         InvalidRecurringExpenseException.class,
         InvalidSavingsGoalException.class,
         InvalidSalaryException.class
