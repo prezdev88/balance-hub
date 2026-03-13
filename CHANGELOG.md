@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/prezdev88/balance-hub/compare/v1.3.0...v1.4.0) (2026-03-13)
+
+
+### Features
+
+* Implement household budget management features ([f1f9f6c](https://github.com/prezdev88/balance-hub/commit/f1f9f6c10461b084bc1a51d026c55b7d2c963ccb))
+* Implement pending management use cases and related infrastructure ([85fbbe9](https://github.com/prezdev88/balance-hub/commit/85fbbe947af72679e098e4f10b6d7a7fe0d6f222))
+
 ## [1.3.0](https://github.com/prezdev88/balance-hub/compare/v1.2.0...v1.3.0) (2026-03-01)
 
 
