@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import cl.prezdev.balancehub.application.exception.DebtorNotFoundException;
 import cl.prezdev.balancehub.application.exception.DebtNotFoundException;
 import cl.prezdev.balancehub.application.exception.MonthlySalarySnapshotNotFoundException;
+import cl.prezdev.balancehub.application.exception.PendingNotFoundException;
 import cl.prezdev.balancehub.application.exception.FixedExpenseNotFoundException;
 import cl.prezdev.balancehub.application.exception.InstallmentNotFoundException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtException;
 import cl.prezdev.balancehub.domain.exception.InvalidDebtorException;
 import cl.prezdev.balancehub.domain.exception.InvalidInstallmentException;
 import cl.prezdev.balancehub.domain.exception.InvalidHouseholdBudgetException;
+import cl.prezdev.balancehub.domain.exception.InvalidPendingException;
 import cl.prezdev.balancehub.domain.exception.InvalidRecurringExpenseException;
 import cl.prezdev.balancehub.domain.exception.InvalidSavingsGoalException;
 import cl.prezdev.balancehub.domain.exception.InvalidSalaryException;
@@ -29,6 +31,7 @@ public class ApiExceptionHandler {
         InvalidDebtException.class,
         InvalidInstallmentException.class,
         InvalidHouseholdBudgetException.class,
+        InvalidPendingException.class,
         InvalidRecurringExpenseException.class,
         InvalidSavingsGoalException.class,
         InvalidSalaryException.class
@@ -48,6 +51,7 @@ public class ApiExceptionHandler {
         DebtNotFoundException.class,
         MonthlySalarySnapshotNotFoundException.class,
         InstallmentNotFoundException.class,
+        PendingNotFoundException.class,
         FixedExpenseNotFoundException.class
     })
     public ResponseEntity<ApiErrorResponse> handleNotFound(RuntimeException ex) {

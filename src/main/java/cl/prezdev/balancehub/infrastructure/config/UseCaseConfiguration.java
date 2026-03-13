@@ -13,8 +13,10 @@ import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputP
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSavingsGoalInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.CreatePendingInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeleteDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeleteFixedExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeletePendingInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetDebtDetailInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetHouseholdBudgetSummaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySalarySnapshotInputPort;
@@ -23,6 +25,7 @@ import cl.prezdev.balancehub.application.ports.in.GetMonthlySummaryReportInputPo
 import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetUnpaidInstallmentsByMonthInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListPendingsInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
@@ -35,6 +38,7 @@ import cl.prezdev.balancehub.application.ports.out.DebtRepository;
 import cl.prezdev.balancehub.application.ports.out.HouseholdBudgetRepository;
 import cl.prezdev.balancehub.application.ports.out.InstallmentRepository;
 import cl.prezdev.balancehub.application.ports.out.MonthlySalarySnapshotRepository;
+import cl.prezdev.balancehub.application.ports.out.PendingRepository;
 import cl.prezdev.balancehub.application.ports.out.RecurringExpenseRepository;
 import cl.prezdev.balancehub.application.ports.out.SavingsGoalRepository;
 import cl.prezdev.balancehub.application.ports.out.SalaryRepository;
@@ -51,6 +55,9 @@ import cl.prezdev.balancehub.application.usecases.householdbudget.summary.GetHou
 import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.unpaid.GetUnpaidInstallmentsByMonthUseCase;
 import cl.prezdev.balancehub.application.usecases.report.monthly.GetMonthlySummaryReportUseCase;
+import cl.prezdev.balancehub.application.usecases.pending.create.CreatePendingUseCase;
+import cl.prezdev.balancehub.application.usecases.pending.delete.DeletePendingUseCase;
+import cl.prezdev.balancehub.application.usecases.pending.list.ListPendingsUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.create.CreateRecurringExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.delete.DeleteFixedExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.recurringexpense.list.ListRecurringExpensesUseCase;
@@ -130,6 +137,31 @@ public class UseCaseConfiguration {
         InstallmentRepository installmentRepository
     ) {
         return new GetUnpaidInstallmentsByMonthUseCase(debtorRepository, debtRepository, installmentRepository);
+    }
+
+    @Bean
+    CreatePendingInputPort createPendingUseCase(
+        PendingRepository pendingRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreatePendingUseCase delegate = new CreatePendingUseCase(pendingRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    ListPendingsInputPort listPendingsUseCase(PendingRepository pendingRepository) {
+        return new ListPendingsUseCase(pendingRepository);
+    }
+
+    @Bean
+    DeletePendingInputPort deletePendingUseCase(
+        PendingRepository pendingRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        DeletePendingUseCase delegate = new DeletePendingUseCase(pendingRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> tx.executeWithoutResult(status -> delegate.execute(command));
     }
 
     @Bean
