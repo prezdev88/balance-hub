@@ -31,6 +31,7 @@ import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBudgetInputPort;
+import cl.prezdev.balancehub.application.ports.in.UpdateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorAccessRepository;
@@ -45,6 +46,7 @@ import cl.prezdev.balancehub.application.ports.out.SalaryRepository;
 import cl.prezdev.balancehub.application.usecases.debt.create.CreateDebtUseCase;
 import cl.prezdev.balancehub.application.usecases.debt.delete.DeleteDebtUseCase;
 import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailUseCase;
+import cl.prezdev.balancehub.application.usecases.debt.update.UpdateDebtUseCase;
 import cl.prezdev.balancehub.application.usecases.debtor.create.CreateDebtorUseCase;
 import cl.prezdev.balancehub.application.usecases.debtor.list.ListDebtorsUseCase;
 import cl.prezdev.balancehub.application.usecases.financialplan.GetMonthlyFreeAmountUseCase;
@@ -118,6 +120,17 @@ public class UseCaseConfiguration {
         InstallmentRepository installmentRepository
     ) {
         return new GetDebtDetailUseCase(debtRepository, debtorRepository, installmentRepository);
+    }
+
+    @Bean
+    UpdateDebtInputPort updateDebtUseCase(
+        DebtRepository debtRepository,
+        InstallmentRepository installmentRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        UpdateDebtUseCase delegate = new UpdateDebtUseCase(debtRepository, installmentRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeleteDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetDebtDetailInputPort;
+import cl.prezdev.balancehub.application.ports.in.UpdateDebtInputPort;
 import cl.prezdev.balancehub.application.usecases.debt.create.CreateDebtResult;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.CreateDebtCommand;
 import cl.prezdev.balancehub.application.usecases.debt.create.command.DebtCommand;
@@ -28,6 +30,8 @@ import cl.prezdev.balancehub.application.usecases.debt.get.DebtItem;
 import cl.prezdev.balancehub.application.usecases.debt.get.InstallmentItem;
 import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailCommand;
 import cl.prezdev.balancehub.application.usecases.debt.getdetail.GetDebtDetailResult;
+import cl.prezdev.balancehub.application.usecases.debt.update.UpdateDebtResult;
+import cl.prezdev.balancehub.application.usecases.debt.update.command.UpdateDebtCommand;
 import cl.prezdev.balancehub.infrastructure.security.SecurityAccess;
 
 @RestController
@@ -37,15 +41,18 @@ public class DebtController {
     private final CreateDebtInputPort createDebtUseCase;
     private final DeleteDebtInputPort deleteDebtUseCase;
     private final GetDebtDetailInputPort getDebtDetailUseCase;
+    private final UpdateDebtInputPort updateDebtUseCase;
 
     public DebtController(
         CreateDebtInputPort createDebtUseCase,
         DeleteDebtInputPort deleteDebtUseCase,
-        GetDebtDetailInputPort getDebtDetailUseCase
+        GetDebtDetailInputPort getDebtDetailUseCase,
+        UpdateDebtInputPort updateDebtUseCase
     ) {
         this.createDebtUseCase = createDebtUseCase;
         this.deleteDebtUseCase = deleteDebtUseCase;
         this.getDebtDetailUseCase = getDebtDetailUseCase;
+        this.updateDebtUseCase = updateDebtUseCase;
     }
 
     @PostMapping
@@ -84,6 +91,21 @@ public class DebtController {
     public ResponseEntity<Void> delete(@PathVariable String debtId) {
         deleteDebtUseCase.execute(new DeleteDebtCommand(debtId));
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{debtId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<UpdateDebtHttpResponse> update(@PathVariable String debtId, @RequestBody UpdateDebtRequest request) {
+        UpdateDebtResult result = updateDebtUseCase.execute(
+            new UpdateDebtCommand(
+                debtId,
+                request.description(),
+                request.totalAmount(),
+                request.installmentAmount(),
+                request.createdAt()
+            )
+        );
+        return ResponseEntity.ok(new UpdateDebtHttpResponse(result.debtId()));
     }
 
     private static GetDebtDetailHttpResponse toHttpResponse(GetDebtDetailResult result) {
@@ -145,4 +167,13 @@ public class DebtController {
         Instant paidAt,
         java.math.BigDecimal amount
     ) {}
+
+    public record UpdateDebtRequest(
+        String description,
+        java.math.BigDecimal totalAmount,
+        java.math.BigDecimal installmentAmount,
+        LocalDate createdAt
+    ) {}
+
+    public record UpdateDebtHttpResponse(String debtId) {}
 }

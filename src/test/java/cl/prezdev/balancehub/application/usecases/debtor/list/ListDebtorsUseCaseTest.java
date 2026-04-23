@@ -98,6 +98,11 @@ class ListDebtorsUseCaseTest {
         }
 
         @Override
+        public void update(cl.prezdev.balancehub.domain.Debt debt) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public Optional<cl.prezdev.balancehub.domain.Debt> findById(String debtId) {
             return Optional.empty();
         }

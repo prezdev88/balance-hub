@@ -92,4 +92,8 @@ public class Installment {
 
         this.paidAt = paidAt;
     }
+
+    public Installment withAmount(BigDecimal amount) {
+        return new Installment(this.id, this.debtId, this.number, this.dueDate, amount, this.paidAt);
+    }
 }

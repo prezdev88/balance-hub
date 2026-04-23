@@ -28,6 +28,11 @@ public class DebtJpaAdapter implements DebtRepository {
     }
 
     @Override
+    public void update(Debt debt) {
+        repository.save(toEntity(debt));
+    }
+
+    @Override
     public Optional<Debt> findById(String debtId) {
         return repository.findById(debtId).map(this::toDomain);
     }

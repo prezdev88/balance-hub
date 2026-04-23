@@ -100,6 +100,12 @@ class GetUnpaidInstallmentsByMonthUseCaseTest {
         }
 
         @Override
+        public void update(Debt debt) {
+            saved.removeIf(d -> d.getId().equals(debt.getId()));
+            saved.add(debt);
+        }
+
+        @Override
         public Optional<Debt> findById(String debtId) {
             return saved.stream().filter(d -> d.getId().equals(debtId)).findFirst();
         }

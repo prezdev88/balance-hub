@@ -75,4 +75,20 @@ public class Debt {
     public boolean isSettled() {
         return settled;
     }
+
+    public Debt withDescription(String description) {
+        return new Debt(this.id, description, this.totalAmount, this.debtorId, this.createdAt, this.settled);
+    }
+
+    public Debt withTotalAmount(BigDecimal totalAmount) {
+        return new Debt(this.id, this.description, totalAmount, this.debtorId, this.createdAt, this.settled);
+    }
+
+    public Debt withCreatedAt(Instant createdAt) {
+        return new Debt(this.id, this.description, this.totalAmount, this.debtorId, createdAt, this.settled);
+    }
+
+    public Debt withSettled(boolean settled) {
+        return new Debt(this.id, this.description, this.totalAmount, this.debtorId, this.createdAt, settled);
+    }
 }

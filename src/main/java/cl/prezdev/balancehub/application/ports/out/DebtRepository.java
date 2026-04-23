@@ -10,6 +10,8 @@ import cl.prezdev.balancehub.domain.Debt;
 public interface DebtRepository {
     void save(Debt debt);
 
+    void update(Debt debt);
+
     Optional<Debt> findById(String debtId);
 
     void deleteById(String debtId);
