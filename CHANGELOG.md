@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/prezdev88/balance-hub/compare/v1.4.0...v1.5.0) (2026-04-24)
+
+
+### Features
+
+* add utility SQL queries for installment management ([54dca06](https://github.com/prezdev88/balance-hub/commit/54dca06f9e64618b181c259e04b2a589848ea887))
+* implement update debt use case and related infrastructure ([42dffb1](https://github.com/prezdev88/balance-hub/commit/42dffb12c512b02a3e9e5300b285c3002dacfb86))
+
 ## [1.4.0](https://github.com/prezdev88/balance-hub/compare/v1.3.0...v1.4.0) (2026-03-13)
 
 
