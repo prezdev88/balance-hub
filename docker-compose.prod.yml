@@ -14,8 +14,8 @@ services:
     networks:
       - balance-hub-net
       - postgresql-shared-net
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
 
 networks:
   balance-hub-net:
