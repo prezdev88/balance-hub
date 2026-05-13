@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
 import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
+import cl.prezdev.balancehub.application.ports.in.CreateHouseholdBagInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSavingsGoalInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
@@ -24,15 +25,20 @@ import cl.prezdev.balancehub.application.ports.in.GetMonthlyFreeAmountInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySummaryReportInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetRecurringExpenseTotalInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetUnpaidInstallmentsByMonthInputPort;
+import cl.prezdev.balancehub.application.ports.in.ListHouseholdBagsInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListDebtorsInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListPendingsInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListRecurringExpensesInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayInstallmentInputPort;
 import cl.prezdev.balancehub.application.ports.in.PayMonthlySalaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdBagMovementInputPort;
 import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBagInputPort;
 import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBudgetInputPort;
+import cl.prezdev.balancehub.application.ports.in.UpdateHouseholdBagBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateFixedExpenseInputPort;
+import cl.prezdev.balancehub.application.ports.out.HouseholdBagMovementRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtorAccessRepository;
 import cl.prezdev.balancehub.application.ports.out.DebtRepository;
@@ -54,6 +60,11 @@ import cl.prezdev.balancehub.application.usecases.householdbudget.configure.Conf
 import cl.prezdev.balancehub.application.usecases.householdbudget.expense.RegisterHouseholdExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbudget.reset.ResetHouseholdBudgetUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbudget.summary.GetHouseholdBudgetSummaryUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.create.CreateHouseholdBagUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.list.ListHouseholdBagsUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.movement.RegisterHouseholdBagMovementUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.reset.ResetHouseholdBagUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.updatebudget.UpdateHouseholdBagBudgetUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.pay.PayInstallmentUseCase;
 import cl.prezdev.balancehub.application.usecases.installment.unpaid.GetUnpaidInstallmentsByMonthUseCase;
 import cl.prezdev.balancehub.application.usecases.report.monthly.GetMonthlySummaryReportUseCase;
@@ -252,6 +263,59 @@ public class UseCaseConfiguration {
         HouseholdBudgetRepository householdBudgetRepository
     ) {
         return new GetHouseholdBudgetSummaryUseCase(householdBudgetRepository);
+    }
+
+    @Bean
+    ListHouseholdBagsInputPort listHouseholdBagsUseCase(HouseholdBudgetRepository householdBudgetRepository) {
+        return new ListHouseholdBagsUseCase(householdBudgetRepository);
+    }
+
+    @Bean
+    CreateHouseholdBagInputPort createHouseholdBagUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        CreateHouseholdBagUseCase delegate = new CreateHouseholdBagUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    UpdateHouseholdBagBudgetInputPort updateHouseholdBagBudgetUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        UpdateHouseholdBagBudgetUseCase delegate = new UpdateHouseholdBagBudgetUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    RegisterHouseholdBagMovementInputPort registerHouseholdBagMovementUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        HouseholdBagMovementRepository householdBagMovementRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        RegisterHouseholdBagMovementUseCase delegate = new RegisterHouseholdBagMovementUseCase(
+            householdBudgetRepository,
+            householdBagMovementRepository
+        );
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    ResetHouseholdBagInputPort resetHouseholdBagUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        HouseholdBagMovementRepository householdBagMovementRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        ResetHouseholdBagUseCase delegate = new ResetHouseholdBagUseCase(
+            householdBudgetRepository,
+            householdBagMovementRepository
+        );
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 
     @Bean

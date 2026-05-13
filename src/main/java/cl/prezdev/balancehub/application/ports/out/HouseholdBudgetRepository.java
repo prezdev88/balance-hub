@@ -9,7 +9,13 @@ import cl.prezdev.balancehub.domain.enums.HouseholdBudgetCategory;
 public interface HouseholdBudgetRepository {
     Optional<HouseholdBudgetConfig> findConfigByCategory(HouseholdBudgetCategory category);
 
+    Optional<HouseholdBudgetConfig> findById(String id);
+
+    Optional<HouseholdBudgetConfig> findByName(String name);
+
     List<HouseholdBudgetConfig> findAllConfigs();
 
     void saveConfig(HouseholdBudgetConfig config);
+
+    void save(HouseholdBudgetConfig config);
 }

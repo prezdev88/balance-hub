@@ -8,30 +8,50 @@ import cl.prezdev.balancehub.domain.exception.InvalidHouseholdBudgetException;
 
 public class HouseholdBudgetConfig {
 
-    private final HouseholdBudgetCategory category;
+    private static final String VEGETABLES_BAG_ID = "f7f4d9d1-15d8-4f2c-9c8f-5f6a96f9c101";
+    private static final String GROCERIES_BAG_ID = "c1b71f59-9ea8-4f0d-9153-f5b6a3b21d02";
+    private static final String VEGETABLES_BAG_NAME = "Verduras";
+    private static final String GROCERIES_BAG_NAME = "Mercadería";
+    private static final String VEGETABLES_BAG_EMOJI = "🥦";
+    private static final String GROCERIES_BAG_EMOJI = "🛒";
+
+    private final String id;
+    private final String name;
+    private final String emoji;
     private BigDecimal monthlyAmount;
     private BigDecimal remainingAmount;
     private Instant updatedAt;
 
     public HouseholdBudgetConfig(HouseholdBudgetCategory category, BigDecimal monthlyAmount) {
-        this(category, monthlyAmount, monthlyAmount, Instant.now());
+        this(
+            getCompatibilityId(category),
+            getCompatibilityName(category),
+            getCompatibilityEmoji(category),
+            monthlyAmount,
+            monthlyAmount,
+            Instant.now()
+        );
     }
 
     public HouseholdBudgetConfig(
-        HouseholdBudgetCategory category,
+        String id,
+        String name,
+        String emoji,
         BigDecimal monthlyAmount,
         BigDecimal remainingAmount,
         Instant updatedAt
     ) {
-        validate(category, monthlyAmount, remainingAmount, updatedAt);
-        this.category = category;
+        validate(id, name, emoji, monthlyAmount, remainingAmount, updatedAt);
+        this.id = id;
+        this.name = name;
+        this.emoji = emoji;
         this.monthlyAmount = monthlyAmount;
         this.remainingAmount = remainingAmount;
         this.updatedAt = updatedAt;
     }
 
     public void updateMonthlyAmount(BigDecimal monthlyAmount, Instant updatedAt) {
-        validate(category, monthlyAmount, monthlyAmount, updatedAt);
+        validate(id, name, emoji, monthlyAmount, monthlyAmount, updatedAt);
         this.monthlyAmount = monthlyAmount;
         this.remainingAmount = monthlyAmount;
         this.updatedAt = updatedAt;
@@ -63,8 +83,26 @@ public class HouseholdBudgetConfig {
         this.updatedAt = updatedAt;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmoji() {
+        return emoji;
+    }
+
     public HouseholdBudgetCategory getCategory() {
-        return category;
+        if (VEGETABLES_BAG_NAME.equals(name)) {
+            return HouseholdBudgetCategory.VEGETABLES;
+        }
+        if (GROCERIES_BAG_NAME.equals(name)) {
+            return HouseholdBudgetCategory.GROCERIES;
+        }
+        throw new InvalidHouseholdBudgetException("Bag " + name + " has no compatibility category");
     }
 
     public BigDecimal getMonthlyAmount() {
@@ -80,19 +118,27 @@ public class HouseholdBudgetConfig {
     }
 
     private static void validate(
-        HouseholdBudgetCategory category,
+        String id,
+        String name,
+        String emoji,
         BigDecimal monthlyAmount,
         BigDecimal remainingAmount,
         Instant updatedAt
     ) {
-        if (category == null) {
-            throw new InvalidHouseholdBudgetException("Category cannot be null");
+        if (id == null || id.isBlank()) {
+            throw new InvalidHouseholdBudgetException("Bag ID cannot be null or blank");
+        }
+        if (name == null || name.isBlank()) {
+            throw new InvalidHouseholdBudgetException("Bag name cannot be null or blank");
+        }
+        if (emoji == null || emoji.isBlank()) {
+            throw new InvalidHouseholdBudgetException("Bag emoji cannot be null or blank");
         }
         if (monthlyAmount == null) {
             throw new InvalidHouseholdBudgetException("Monthly amount cannot be null");
         }
-        if (monthlyAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidHouseholdBudgetException("Monthly amount must be greater than zero");
+        if (monthlyAmount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidHouseholdBudgetException("Monthly amount cannot be negative");
         }
         if (remainingAmount == null) {
             throw new InvalidHouseholdBudgetException("Remaining amount cannot be null");
@@ -103,5 +149,35 @@ public class HouseholdBudgetConfig {
         if (updatedAt == null) {
             throw new InvalidHouseholdBudgetException("UpdatedAt cannot be null");
         }
+    }
+
+    private static String getCompatibilityId(HouseholdBudgetCategory category) {
+        if (category == null) {
+            throw new InvalidHouseholdBudgetException("Category cannot be null");
+        }
+        return switch (category) {
+            case VEGETABLES -> VEGETABLES_BAG_ID;
+            case GROCERIES -> GROCERIES_BAG_ID;
+        };
+    }
+
+    private static String getCompatibilityName(HouseholdBudgetCategory category) {
+        if (category == null) {
+            throw new InvalidHouseholdBudgetException("Category cannot be null");
+        }
+        return switch (category) {
+            case VEGETABLES -> VEGETABLES_BAG_NAME;
+            case GROCERIES -> GROCERIES_BAG_NAME;
+        };
+    }
+
+    private static String getCompatibilityEmoji(HouseholdBudgetCategory category) {
+        if (category == null) {
+            throw new InvalidHouseholdBudgetException("Category cannot be null");
+        }
+        return switch (category) {
+            case VEGETABLES -> VEGETABLES_BAG_EMOJI;
+            case GROCERIES -> GROCERIES_BAG_EMOJI;
+        };
     }
 }
