@@ -20,6 +20,7 @@ import cl.prezdev.balancehub.application.ports.in.DeleteFixedExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.DeletePendingInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetDebtDetailInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetHouseholdBudgetSummaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetHouseholdBagMovementHistoryInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySalarySnapshotInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlyFreeAmountInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetMonthlySummaryReportInputPort;
@@ -60,6 +61,7 @@ import cl.prezdev.balancehub.application.usecases.householdbudget.configure.Conf
 import cl.prezdev.balancehub.application.usecases.householdbudget.expense.RegisterHouseholdExpenseUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbudget.reset.ResetHouseholdBudgetUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbudget.summary.GetHouseholdBudgetSummaryUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.history.GetHouseholdBagMovementHistoryUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.create.CreateHouseholdBagUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.list.ListHouseholdBagsUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.movement.RegisterHouseholdBagMovementUseCase;
@@ -316,6 +318,17 @@ public class UseCaseConfiguration {
         );
         TransactionTemplate tx = new TransactionTemplate(transactionManager);
         return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
+    }
+
+    @Bean
+    GetHouseholdBagMovementHistoryInputPort getHouseholdBagMovementHistoryUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        HouseholdBagMovementRepository householdBagMovementRepository
+    ) {
+        return new GetHouseholdBagMovementHistoryUseCase(
+            householdBudgetRepository,
+            householdBagMovementRepository
+        );
     }
 
     @Bean

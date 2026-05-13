@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateHouseholdBagInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetHouseholdBudgetSummaryInputPort;
+import cl.prezdev.balancehub.application.ports.in.GetHouseholdBagMovementHistoryInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListHouseholdBagsInputPort;
 import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdBagMovementInputPort;
 import cl.prezdev.balancehub.application.ports.in.RegisterHouseholdExpenseInputPort;
@@ -26,6 +27,8 @@ import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateHouseholdBagBudgetInputPort;
 import cl.prezdev.balancehub.application.usecases.householdbag.HouseholdBagDetails;
 import cl.prezdev.balancehub.application.usecases.householdbag.create.CreateHouseholdBagCommand;
+import cl.prezdev.balancehub.application.usecases.householdbag.history.GetHouseholdBagMovementHistoryCommand;
+import cl.prezdev.balancehub.application.usecases.householdbag.history.HouseholdBagMovementHistoryItem;
 import cl.prezdev.balancehub.application.usecases.householdbag.movement.RegisterHouseholdBagMovementCommand;
 import cl.prezdev.balancehub.application.usecases.householdbag.reset.ResetHouseholdBagCommand;
 import cl.prezdev.balancehub.application.usecases.householdbag.updatebudget.UpdateHouseholdBagBudgetCommand;
@@ -51,6 +54,7 @@ public class HouseholdBudgetController {
     private final UpdateHouseholdBagBudgetInputPort updateBudgetUseCase;
     private final RegisterHouseholdBagMovementInputPort registerMovementUseCase;
     private final ResetHouseholdBagInputPort resetBagUseCase;
+    private final GetHouseholdBagMovementHistoryInputPort historyUseCase;
 
     public HouseholdBudgetController(
         ConfigureHouseholdBudgetInputPort configureUseCase,
@@ -61,7 +65,8 @@ public class HouseholdBudgetController {
         CreateHouseholdBagInputPort createBagUseCase,
         UpdateHouseholdBagBudgetInputPort updateBudgetUseCase,
         RegisterHouseholdBagMovementInputPort registerMovementUseCase,
-        ResetHouseholdBagInputPort resetBagUseCase
+        ResetHouseholdBagInputPort resetBagUseCase,
+        GetHouseholdBagMovementHistoryInputPort historyUseCase
     ) {
         this.configureUseCase = configureUseCase;
         this.registerExpenseUseCase = registerExpenseUseCase;
@@ -72,6 +77,7 @@ public class HouseholdBudgetController {
         this.updateBudgetUseCase = updateBudgetUseCase;
         this.registerMovementUseCase = registerMovementUseCase;
         this.resetBagUseCase = resetBagUseCase;
+        this.historyUseCase = historyUseCase;
     }
 
     @GetMapping
@@ -150,6 +156,16 @@ public class HouseholdBudgetController {
         ));
     }
 
+    @GetMapping("/{bagId}/movements")
+    public ResponseEntity<GetHouseholdBagMovementHistoryHttpResponse> getMovementHistory(@PathVariable String bagId) {
+        GetHouseholdBagMovementHistoryCommand command = new GetHouseholdBagMovementHistoryCommand(bagId);
+        var result = historyUseCase.execute(command);
+        List<HouseholdBagMovementHistoryHttpItem> movements = result.movements().stream()
+            .map(HouseholdBudgetController::toHistoryHttpItem)
+            .toList();
+        return ResponseEntity.ok(new GetHouseholdBagMovementHistoryHttpResponse(result.bagId(), movements));
+    }
+
     @PostMapping("/{bagReference}/reset")
     public ResponseEntity<ResetHouseholdBagHttpResponse> reset(@PathVariable String bagReference) {
         ResetHouseholdBagCommand command = new ResetHouseholdBagCommand(bagReference);
@@ -190,6 +206,15 @@ public class HouseholdBudgetController {
             bag.spentAmount(),
             bag.remainingAmount(),
             bag.updatedAt()
+        );
+    }
+
+    private static HouseholdBagMovementHistoryHttpItem toHistoryHttpItem(HouseholdBagMovementHistoryItem item) {
+        return new HouseholdBagMovementHistoryHttpItem(
+            item.id(),
+            item.amount(),
+            item.type(),
+            item.createdAt()
         );
     }
 
@@ -253,6 +278,18 @@ public class HouseholdBudgetController {
         BigDecimal monthlyAmount,
         BigDecimal remainingAmount,
         Instant updatedAt
+    ) {}
+
+    public record GetHouseholdBagMovementHistoryHttpResponse(
+        String bagId,
+        List<HouseholdBagMovementHistoryHttpItem> movements
+    ) {}
+
+    public record HouseholdBagMovementHistoryHttpItem(
+        String id,
+        BigDecimal amount,
+        HouseholdBagMovementType type,
+        Instant createdAt
     ) {}
 
     public record GetHouseholdBudgetSummaryHttpResponse(
