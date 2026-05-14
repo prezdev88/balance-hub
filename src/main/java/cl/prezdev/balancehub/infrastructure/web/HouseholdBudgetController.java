@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
@@ -157,13 +158,21 @@ public class HouseholdBudgetController {
     }
 
     @GetMapping("/{bagId}/movements")
-    public ResponseEntity<GetHouseholdBagMovementHistoryHttpResponse> getMovementHistory(@PathVariable String bagId) {
-        GetHouseholdBagMovementHistoryCommand command = new GetHouseholdBagMovementHistoryCommand(bagId);
+    public ResponseEntity<GetHouseholdBagMovementHistoryHttpResponse> getMovementHistory(
+        @PathVariable String bagId,
+        @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ) {
+        GetHouseholdBagMovementHistoryCommand command = new GetHouseholdBagMovementHistoryCommand(bagId, page, size);
         var result = historyUseCase.execute(command);
         List<HouseholdBagMovementHistoryHttpItem> movements = result.movements().stream()
             .map(HouseholdBudgetController::toHistoryHttpItem)
             .toList();
-        return ResponseEntity.ok(new GetHouseholdBagMovementHistoryHttpResponse(result.bagId(), movements));
+        return ResponseEntity.ok(new GetHouseholdBagMovementHistoryHttpResponse(
+            result.bagId(), movements,
+            result.page(), result.size(),
+            result.totalPages(), result.totalElements()
+        ));
     }
 
     @PostMapping("/{bagReference}/reset")
@@ -282,7 +291,11 @@ public class HouseholdBudgetController {
 
     public record GetHouseholdBagMovementHistoryHttpResponse(
         String bagId,
-        List<HouseholdBagMovementHistoryHttpItem> movements
+        List<HouseholdBagMovementHistoryHttpItem> movements,
+        int page,
+        int size,
+        int totalPages,
+        long totalElements
     ) {}
 
     public record HouseholdBagMovementHistoryHttpItem(

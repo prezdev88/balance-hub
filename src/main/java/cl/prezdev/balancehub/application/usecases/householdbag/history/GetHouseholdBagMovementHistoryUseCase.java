@@ -34,10 +34,17 @@ public class GetHouseholdBagMovementHistoryUseCase implements GetHouseholdBagMov
         }
 
         String bagId = requireBag(command.bagId());
-        List<HouseholdBagMovementHistoryItem> items = movementRepository.findByBagId(bagId).stream()
+        HouseholdBagMovementPaginatedResult paginated = movementRepository.findByBagIdPaginated(
+            bagId, command.page(), command.size()
+        );
+        List<HouseholdBagMovementHistoryItem> items = paginated.movements().stream()
             .map(this::toItem)
             .toList();
-        return new GetHouseholdBagMovementHistoryResult(bagId, items);
+        return new GetHouseholdBagMovementHistoryResult(
+            bagId, items,
+            paginated.page(), paginated.size(),
+            paginated.totalPages(), paginated.totalElements()
+        );
     }
 
     private String requireBag(String bagId) {

@@ -2,9 +2,12 @@ package cl.prezdev.balancehub.infrastructure.persistence.jpa.adapter;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import cl.prezdev.balancehub.application.ports.out.HouseholdBagMovementRepository;
+import cl.prezdev.balancehub.application.usecases.householdbag.history.HouseholdBagMovementPaginatedResult;
 import cl.prezdev.balancehub.domain.HouseholdBagMovement;
 import cl.prezdev.balancehub.infrastructure.persistence.jpa.entity.HouseholdBagMovementJpaEntity;
 import cl.prezdev.balancehub.infrastructure.persistence.jpa.repository.HouseholdBagMovementJpaRepository;
@@ -29,6 +32,23 @@ public class HouseholdBagMovementJpaAdapter implements HouseholdBagMovementRepos
         return repository.findAllByBagIdOrderByCreatedAtDesc(bagId).stream()
             .map(this::toDomain)
             .toList();
+    }
+
+    @Override
+    public HouseholdBagMovementPaginatedResult findByBagIdPaginated(String bagId, int page, int size) {
+        Page<HouseholdBagMovementJpaEntity> pageResult = repository.findAllByBagIdOrderByCreatedAtDesc(
+            bagId, PageRequest.of(page, size)
+        );
+        List<HouseholdBagMovement> movements = pageResult.getContent().stream()
+            .map(this::toDomain)
+            .toList();
+        return new HouseholdBagMovementPaginatedResult(
+            movements,
+            pageResult.getNumber(),
+            pageResult.getSize(),
+            pageResult.getTotalPages(),
+            pageResult.getTotalElements()
+        );
     }
 
     private HouseholdBagMovementJpaEntity toEntity(HouseholdBagMovement movement) {
