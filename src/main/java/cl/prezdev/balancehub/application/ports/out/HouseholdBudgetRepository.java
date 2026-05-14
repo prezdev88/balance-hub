@@ -13,6 +13,8 @@ public interface HouseholdBudgetRepository {
 
     Optional<HouseholdBudgetConfig> findByName(String name);
 
+    void deactivateBag(String id);
+
     List<HouseholdBudgetConfig> findAllConfigs();
 
     void saveConfig(HouseholdBudgetConfig config);

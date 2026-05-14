@@ -10,5 +10,9 @@ import cl.prezdev.balancehub.infrastructure.persistence.jpa.entity.HouseholdBagJ
 public interface HouseholdBagJpaRepository extends JpaRepository<HouseholdBagJpaEntity, String> {
     List<HouseholdBagJpaEntity> findAllByOrderByNameAsc();
 
+    List<HouseholdBagJpaEntity> findAllByActiveTrueOrderByNameAsc();
+
     Optional<HouseholdBagJpaEntity> findByName(String name);
+
+    Optional<HouseholdBagJpaEntity> findByIdAndActiveTrue(String id);
 }

@@ -11,6 +11,7 @@ import cl.prezdev.balancehub.application.ports.in.CreateDebtInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateDebtorInputPort;
 import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateHouseholdBagInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeactivateHouseholdBagInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateRecurringExpenseInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSavingsGoalInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateSalaryInputPort;
@@ -63,6 +64,7 @@ import cl.prezdev.balancehub.application.usecases.householdbudget.reset.ResetHou
 import cl.prezdev.balancehub.application.usecases.householdbudget.summary.GetHouseholdBudgetSummaryUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.history.GetHouseholdBagMovementHistoryUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.create.CreateHouseholdBagUseCase;
+import cl.prezdev.balancehub.application.usecases.householdbag.deactivate.DeactivateHouseholdBagUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.list.ListHouseholdBagsUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.movement.RegisterHouseholdBagMovementUseCase;
 import cl.prezdev.balancehub.application.usecases.householdbag.reset.ResetHouseholdBagUseCase;
@@ -410,5 +412,15 @@ public class UseCaseConfiguration {
             savingsGoalRepository,
             recurringExpenseRepository
         );
+    }
+
+    @Bean
+    DeactivateHouseholdBagInputPort deactivateHouseholdBagUseCase(
+        HouseholdBudgetRepository householdBudgetRepository,
+        PlatformTransactionManager transactionManager
+    ) {
+        DeactivateHouseholdBagUseCase delegate = new DeactivateHouseholdBagUseCase(householdBudgetRepository);
+        TransactionTemplate tx = new TransactionTemplate(transactionManager);
+        return command -> Objects.requireNonNull(tx.execute(status -> delegate.execute(command)));
     }
 }

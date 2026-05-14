@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.prezdev.balancehub.application.ports.in.ConfigureHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.CreateHouseholdBagInputPort;
+import cl.prezdev.balancehub.application.ports.in.DeactivateHouseholdBagInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetHouseholdBudgetSummaryInputPort;
 import cl.prezdev.balancehub.application.ports.in.GetHouseholdBagMovementHistoryInputPort;
 import cl.prezdev.balancehub.application.ports.in.ListHouseholdBagsInputPort;
@@ -28,6 +29,7 @@ import cl.prezdev.balancehub.application.ports.in.ResetHouseholdBudgetInputPort;
 import cl.prezdev.balancehub.application.ports.in.UpdateHouseholdBagBudgetInputPort;
 import cl.prezdev.balancehub.application.usecases.householdbag.HouseholdBagDetails;
 import cl.prezdev.balancehub.application.usecases.householdbag.create.CreateHouseholdBagCommand;
+import cl.prezdev.balancehub.application.usecases.householdbag.deactivate.DeactivateHouseholdBagCommand;
 import cl.prezdev.balancehub.application.usecases.householdbag.history.GetHouseholdBagMovementHistoryCommand;
 import cl.prezdev.balancehub.application.usecases.householdbag.history.HouseholdBagMovementHistoryItem;
 import cl.prezdev.balancehub.application.usecases.householdbag.movement.RegisterHouseholdBagMovementCommand;
@@ -56,6 +58,7 @@ public class HouseholdBudgetController {
     private final RegisterHouseholdBagMovementInputPort registerMovementUseCase;
     private final ResetHouseholdBagInputPort resetBagUseCase;
     private final GetHouseholdBagMovementHistoryInputPort historyUseCase;
+    private final DeactivateHouseholdBagInputPort deactivateBagUseCase;
 
     public HouseholdBudgetController(
         ConfigureHouseholdBudgetInputPort configureUseCase,
@@ -67,7 +70,8 @@ public class HouseholdBudgetController {
         UpdateHouseholdBagBudgetInputPort updateBudgetUseCase,
         RegisterHouseholdBagMovementInputPort registerMovementUseCase,
         ResetHouseholdBagInputPort resetBagUseCase,
-        GetHouseholdBagMovementHistoryInputPort historyUseCase
+        GetHouseholdBagMovementHistoryInputPort historyUseCase,
+        DeactivateHouseholdBagInputPort deactivateBagUseCase
     ) {
         this.configureUseCase = configureUseCase;
         this.registerExpenseUseCase = registerExpenseUseCase;
@@ -79,6 +83,7 @@ public class HouseholdBudgetController {
         this.registerMovementUseCase = registerMovementUseCase;
         this.resetBagUseCase = resetBagUseCase;
         this.historyUseCase = historyUseCase;
+        this.deactivateBagUseCase = deactivateBagUseCase;
     }
 
     @GetMapping
@@ -185,6 +190,13 @@ public class HouseholdBudgetController {
             result.remainingAmount(),
             result.updatedAt()
         ));
+    }
+
+    @DeleteMapping("/{bagId}")
+    public ResponseEntity<Void> deactivateBag(@PathVariable String bagId) {
+        DeactivateHouseholdBagCommand command = new DeactivateHouseholdBagCommand(bagId);
+        deactivateBagUseCase.execute(command);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/summary")

@@ -31,6 +31,9 @@ public class HouseholdBagJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
     protected HouseholdBagJpaEntity() {}
 
     public HouseholdBagJpaEntity(
@@ -47,6 +50,7 @@ public class HouseholdBagJpaEntity {
         this.monthlyAmount = monthlyAmount;
         this.remainingAmount = remainingAmount;
         this.updatedAt = updatedAt;
+        this.active = true;
     }
 
     public String getId() {
@@ -71,5 +75,13 @@ public class HouseholdBagJpaEntity {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

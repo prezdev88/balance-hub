@@ -10,6 +10,7 @@ import cl.prezdev.balancehub.domain.HouseholdBudgetConfig;
 import cl.prezdev.balancehub.domain.enums.HouseholdBudgetCategory;
 import cl.prezdev.balancehub.infrastructure.persistence.jpa.entity.HouseholdBagJpaEntity;
 import cl.prezdev.balancehub.infrastructure.persistence.jpa.repository.HouseholdBagJpaRepository;
+import cl.prezdev.balancehub.domain.exception.InvalidHouseholdBudgetException;
 
 @Repository
 public class HouseholdBudgetJpaAdapter implements HouseholdBudgetRepository {
@@ -31,7 +32,7 @@ public class HouseholdBudgetJpaAdapter implements HouseholdBudgetRepository {
 
     @Override
     public Optional<HouseholdBudgetConfig> findById(String id) {
-        return bagRepository.findById(id).map(this::toDomainConfig);
+        return bagRepository.findByIdAndActiveTrue(id).map(this::toDomainConfig);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class HouseholdBudgetJpaAdapter implements HouseholdBudgetRepository {
 
     @Override
     public List<HouseholdBudgetConfig> findAllConfigs() {
-        return bagRepository.findAllByOrderByNameAsc().stream().map(this::toDomainConfig).toList();
+        return bagRepository.findAllByActiveTrueOrderByNameAsc().stream().map(this::toDomainConfig).toList();
     }
 
     @Override
@@ -53,6 +54,17 @@ public class HouseholdBudgetJpaAdapter implements HouseholdBudgetRepository {
     @Override
     public void save(HouseholdBudgetConfig config) {
         saveConfig(config);
+    }
+
+    @Override
+    public void deactivateBag(String id) {
+        HouseholdBagJpaEntity entity = bagRepository.findById(id)
+            .orElseThrow(() -> new InvalidHouseholdBudgetException("Bag " + id + " not found"));
+        if (!entity.isActive()) {
+            throw new InvalidHouseholdBudgetException("Bag " + id + " is already inactive");
+        }
+        entity.setActive(false);
+        bagRepository.save(entity);
     }
 
     private HouseholdBudgetConfig toDomainConfig(HouseholdBagJpaEntity entity) {
