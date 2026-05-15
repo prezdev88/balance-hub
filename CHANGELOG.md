@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/prezdev88/balance-hub/compare/v1.5.0...v1.6.0) (2026-05-15)
+
+
+### Features
+
+* add household_bags table and seed data for vegetables and groceries ([5b5ec8a](https://github.com/prezdev88/balance-hub/commit/5b5ec8a87bad75ed0c225edd73b41eb0edcd5b28))
+* Implement deactivate household bag use case and related components ([5fcbe8e](https://github.com/prezdev88/balance-hub/commit/5fcbe8e8f5c76a1e9a57a976bad073adb05269b4))
+* Implement GetHouseholdBagMovementHistory use case and related classes ([422d0e6](https://github.com/prezdev88/balance-hub/commit/422d0e64560f2ccc44d4f4dc12c8cfe73c9bd520))
+* Implement household bag management use cases ([f76f456](https://github.com/prezdev88/balance-hub/commit/f76f4566a82edce824f30101949188a6a45023e8))
+* implement HouseholdBagMovement domain and repository with JPA adapter and SQL migration ([39877f7](https://github.com/prezdev88/balance-hub/commit/39877f7c998ac48dace51fc01a0aa0296d4f88a5))
+* Implement paginated retrieval of household bag movement history ([8fd36e1](https://github.com/prezdev88/balance-hub/commit/8fd36e15fb4a833a27a4529e54d715f18ad9c58c))
+
+
+### Bug Fixes
+
+* fix backend expose port ([17ccf8b](https://github.com/prezdev88/balance-hub/commit/17ccf8be89b1bc18a0a2a1c86f037890e9f2d730))
+
 ## [1.5.0](https://github.com/prezdev88/balance-hub/compare/v1.4.0...v1.5.0) (2026-04-24)
 
 
