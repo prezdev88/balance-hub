@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/prezdev88/balance-hub/compare/v1.6.0...v1.7.0) (2026-07-31)
+
+
+### Features
+
+* Add total debt amount to unpaid installment items and controller ([d5ebc33](https://github.com/prezdev88/balance-hub/commit/d5ebc33f0a06ade99174f1cfd2a471a030d7e21f))
+
 ## [1.6.0](https://github.com/prezdev88/balance-hub/compare/v1.5.0...v1.6.0) (2026-05-15)
 
 
