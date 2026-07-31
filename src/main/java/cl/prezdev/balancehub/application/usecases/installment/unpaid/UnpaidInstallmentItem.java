@@ -12,6 +12,7 @@ public record UnpaidInstallmentItem(
     int totalInstallments,
     LocalDate dueDate,
     BigDecimal amount,
+    BigDecimal totalDebtAmount,
     boolean paid,
     Instant paidAt
 ) {}

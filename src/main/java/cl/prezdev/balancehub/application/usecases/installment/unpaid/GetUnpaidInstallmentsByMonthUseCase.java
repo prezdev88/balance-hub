@@ -80,6 +80,7 @@ public class GetUnpaidInstallmentsByMonthUseCase implements GetUnpaidInstallment
             .map(installment -> {
                 Debt debt = debtsById.get(installment.getDebtId());
                 String debtDescription = debt != null ? debt.getDescription() : "Sin descripción";
+                BigDecimal totalDebtAmount = debt != null ? debt.getTotalAmount() : BigDecimal.ZERO;
                 return new UnpaidInstallmentItem(
                     installment.getId(),
                     installment.getDebtId(),
@@ -88,6 +89,7 @@ public class GetUnpaidInstallmentsByMonthUseCase implements GetUnpaidInstallment
                     installmentsPerDebt.getOrDefault(installment.getDebtId(), 0L).intValue(),
                     installment.getDueDate(),
                     installment.getAmount(),
+                    totalDebtAmount,
                     installment.isPaid(),
                     installment.getPaidAt()
                 );

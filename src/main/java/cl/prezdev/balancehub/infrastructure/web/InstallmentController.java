@@ -77,6 +77,7 @@ public class InstallmentController {
             item.totalInstallments(),
             item.dueDate(),
             item.amount(),
+            item.totalDebtAmount(),
             item.paid(),
             item.paidAt()
         );
@@ -102,6 +103,7 @@ public class InstallmentController {
         int totalInstallments,
         LocalDate dueDate,
         BigDecimal amount,
+        BigDecimal totalDebtAmount,
         boolean paid,
         Instant paidAt
     ) {}
