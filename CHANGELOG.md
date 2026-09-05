@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/prezdev88/balance-hub/compare/v1.7.0...v1.8.0) (2026-09-05)
+
+
+### Features
+
+* Add detail field to household bag movements and update related components ([aaf478e](https://github.com/prezdev88/balance-hub/commit/aaf478e2fcf83678f027240d54fd5c80a8d86df5))
+
 ## [1.7.0](https://github.com/prezdev88/balance-hub/compare/v1.6.0...v1.7.0) (2026-07-31)
 
 
