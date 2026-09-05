@@ -4,5 +4,6 @@ import java.math.BigDecimal;
 
 public record RegisterHouseholdBagMovementCommand(
     String bagId,
-    BigDecimal amount
+    BigDecimal amount,
+    String detail
 ) {}

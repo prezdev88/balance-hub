@@ -61,7 +61,8 @@ public class GetHouseholdBagMovementHistoryUseCase implements GetHouseholdBagMov
             movement.getId(),
             movement.getAmount(),
             movement.getMovementType(),
-            movement.getCreatedAt()
+            movement.getCreatedAt(),
+            movement.getDetail()
         );
     }
 }

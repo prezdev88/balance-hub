@@ -151,7 +151,7 @@ public class HouseholdBudgetController {
         @PathVariable String bagId,
         @RequestBody RegisterHouseholdBagMovementRequest request
     ) {
-        RegisterHouseholdBagMovementCommand command = new RegisterHouseholdBagMovementCommand(bagId, request.amount());
+        RegisterHouseholdBagMovementCommand command = new RegisterHouseholdBagMovementCommand(bagId, request.amount(), request.detail());
         var result = registerMovementUseCase.execute(command);
         return ResponseEntity.ok(new RegisterHouseholdBagMovementHttpResponse(
             result.bagId(),
@@ -235,7 +235,8 @@ public class HouseholdBudgetController {
             item.id(),
             item.amount(),
             item.type(),
-            item.createdAt()
+            item.createdAt(),
+            item.detail()
         );
     }
 
@@ -249,7 +250,10 @@ public class HouseholdBudgetController {
 
     public record UpdateHouseholdBagBudgetRequest(BigDecimal monthlyAmount) {}
 
-    public record RegisterHouseholdBagMovementRequest(BigDecimal amount) {}
+    public record RegisterHouseholdBagMovementRequest(
+        BigDecimal amount,
+        String detail
+    ) {}
 
     public record ConfigureHouseholdBudgetHttpResponse(
         HouseholdBudgetCategory category,
@@ -314,7 +318,8 @@ public class HouseholdBudgetController {
         String id,
         BigDecimal amount,
         HouseholdBagMovementType type,
-        Instant createdAt
+        Instant createdAt,
+        String detail
     ) {}
 
     public record GetHouseholdBudgetSummaryHttpResponse(

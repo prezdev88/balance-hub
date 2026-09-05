@@ -9,5 +9,6 @@ public record HouseholdBagMovementHistoryItem(
     String id,
     BigDecimal amount,
     HouseholdBagMovementType type,
-    Instant createdAt
+    Instant createdAt,
+    String detail
 ) {}

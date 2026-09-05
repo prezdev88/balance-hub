@@ -46,7 +46,8 @@ public class RegisterHouseholdBagMovementUseCase implements RegisterHouseholdBag
         HouseholdBagMovement movement = new HouseholdBagMovement(
             command.bagId(),
             command.amount(),
-            movementType
+            movementType,
+            command.detail()
         );
         movementRepository.save(movement);
 

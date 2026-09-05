@@ -32,6 +32,9 @@ public class HouseholdBagMovementJpaEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @Column(name = "detail")
+    private String detail;
+
     protected HouseholdBagMovementJpaEntity() {}
 
     public HouseholdBagMovementJpaEntity(
@@ -39,13 +42,15 @@ public class HouseholdBagMovementJpaEntity {
         String bagId,
         BigDecimal amount,
         HouseholdBagMovementType movementType,
-        Instant createdAt
+        Instant createdAt,
+        String detail
     ) {
         this.id = id;
         this.bagId = bagId;
         this.amount = amount;
         this.movementType = movementType;
         this.createdAt = createdAt;
+        this.detail = detail;
     }
 
     public String getId() {
@@ -66,5 +71,9 @@ public class HouseholdBagMovementJpaEntity {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getDetail() {
+        return detail;
     }
 }

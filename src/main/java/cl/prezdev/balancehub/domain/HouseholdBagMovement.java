@@ -14,13 +14,23 @@ public class HouseholdBagMovement {
     private final BigDecimal amount;
     private final HouseholdBagMovementType movementType;
     private final Instant createdAt;
+    private final String detail;
 
     public HouseholdBagMovement(
         String bagId,
         BigDecimal amount,
         HouseholdBagMovementType movementType
     ) {
-        this(UUID.randomUUID().toString(), bagId, amount, movementType, Instant.now());
+        this(bagId, amount, movementType, null);
+    }
+
+    public HouseholdBagMovement(
+        String bagId,
+        BigDecimal amount,
+        HouseholdBagMovementType movementType,
+        String detail
+    ) {
+        this(UUID.randomUUID().toString(), bagId, amount, movementType, Instant.now(), detail);
     }
 
     public HouseholdBagMovement(
@@ -30,12 +40,24 @@ public class HouseholdBagMovement {
         HouseholdBagMovementType movementType,
         Instant createdAt
     ) {
+        this(id, bagId, amount, movementType, createdAt, null);
+    }
+
+    public HouseholdBagMovement(
+        String id,
+        String bagId,
+        BigDecimal amount,
+        HouseholdBagMovementType movementType,
+        Instant createdAt,
+        String detail
+    ) {
         validate(id, bagId, amount, movementType, createdAt);
         this.id = id;
         this.bagId = bagId;
         this.amount = amount;
         this.movementType = movementType;
         this.createdAt = createdAt;
+        this.detail = detail;
     }
 
     public String getId() {
@@ -57,6 +79,11 @@ public class HouseholdBagMovement {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public String getDetail() {
+        return detail;
+    }
+
 
     private static void validate(
         String id,

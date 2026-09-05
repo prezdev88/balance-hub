@@ -57,7 +57,8 @@ public class HouseholdBagMovementJpaAdapter implements HouseholdBagMovementRepos
             movement.getBagId(),
             movement.getAmount(),
             movement.getMovementType(),
-            movement.getCreatedAt()
+            movement.getCreatedAt(),
+            movement.getDetail()
         );
     }
 
@@ -67,7 +68,8 @@ public class HouseholdBagMovementJpaAdapter implements HouseholdBagMovementRepos
             entity.getBagId(),
             entity.getAmount(),
             entity.getMovementType(),
-            entity.getCreatedAt()
+            entity.getCreatedAt(),
+            entity.getDetail()
         );
     }
 }
